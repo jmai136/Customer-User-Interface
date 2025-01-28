@@ -1,31 +1,143 @@
-﻿CREATE DATABASE GourmetShop
+﻿USE master
+DROP DATABASE GourmetShop;
+
+CREATE DATABASE GourmetShop
 GO
 USE GourmetShop
 GO
 
-
 /*==============================================================*/
 /* TABLE: Customer                                              */
 /*==============================================================*/
-CREATE TABLE Customer (
+CREATE TABLE [User] (
    Id                   int                  IDENTITY,
-   FirstName            NVARCHAR(40)         not null,
-   LastName             NVARCHAR(40)         not null,
+   [Role]				int		DEFAULT 1 NOT NULL,
+   FirstName            NVARCHAR(50)         not null,
+   LastName             NVARCHAR(50)         not null,
    City                 NVARCHAR(40)         null,
    Country              NVARCHAR(40)         null,
    Phone                NVARCHAR(20)         null,
-   CONSTRAINT PK_CUSTOMER primary key (Id)
+   CONSTRAINT PK_USER primary key (Id),
+   CONSTRAINT CHK_ROLE CHECK([Role] IN (1, 2)) -- 1: Customer, 2: Admin
 )
 go
 
 /*==============================================================*/
 /* Index: IndexCustomerName                                     */
 /*==============================================================*/
-CREATE INDEX IndexCustomerName ON Customer (
+CREATE INDEX IndexUserName ON [User] (
 LastName ASC,
 FirstName ASC
 )
 go
+
+/*==============================================================*/
+/* TABLE: Admin                                             */
+/*==============================================================*/
+CREATE TABLE [Admin] (
+   Id                   int                  IDENTITY,
+   UserId	                  int not null,
+   Email	                 NVARCHAR(320),		
+   CONSTRAINT PK_ADMIN primary key (Id),
+)
+go
+
+/*==============================================================*/
+/* TABLE: Customer                                              */
+/*==============================================================*/
+CREATE TABLE Customer (
+   Id                   int                  IDENTITY,
+   UserId	                  int not null,		
+   CONSTRAINT PK_CUSTOMER primary key (Id),
+)
+go
+
+/*==============================================================*/
+/* TODO - Index: For faster querying with customer based on user                                */
+/*==============================================================*/
+
+
+/*==============================================================*/
+/* TABLE: Login                                           */
+/*==============================================================*/
+CREATE TABLE [dbo].[Login](
+	[ID] [int] IDENTITY NOT NULL,
+	[UserID] [int] NOT NULL,
+	[Username] [nvarchar](50) NOT NULL,
+	[PasswordHash] [nvarchar](255) NOT NULL,
+)
+go
+
+/*==============================================================*/
+/* Stored procedure: GetProductById                                   */
+/*==============================================================*/
+-- =============================================
+-- Author:		Yareni Perez modified by Jude Mai
+-- Create date:  1/27/2025
+-- Modified date: 1/28/2025
+-- Description:	For creating an admin or customer
+
+-- Notes: Currently we're passing the role to be the default, being 1, 1 is for customer, 2 is for admin
+-- =============================================
+CREATE PROCEDURE [dbo].[CreateUser]
+	@Role int = 1,
+    @FirstName NVARCHAR(50),
+    @LastName NVARCHAR(50),
+	@City NVARCHAR(40) = NULL,
+	@Country NVARCHAR(40) = null,
+	@Phone NVARCHAR(20) =   null,
+
+    @Email NVARCHAR(100) = NULL, -- This is for specifically admin
+
+    @Username NVARCHAR(50),
+    @PasswordHash NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @UserId INT;
+
+    BEGIN TRY
+		IF EXISTS (
+			SELECT 1 FROM Login WHERE Username = @Username
+		)
+		BEGIN
+            RAISERROR('A user with this username already exists.', 16, 1); -- Message, severity, state
+        END
+
+		-- Insert a new user into the User table
+		INSERT INTO [User] ([Role], FirstName, LastName, City, Country, Phone)
+			VALUES(@Role, @FirstName, @LastName, @City, @Country, @Phone);
+
+		-- Retrieve the newly inserted AdminId
+        SET @UserId = SCOPE_IDENTITY();
+
+		-- Insert the new username and password, must already be hashed beforehand
+		INSERT INTO [Login] (UserId, Username, PasswordHash)
+		VALUES (@UserId, @Username, @PasswordHash);
+
+		-- Depending on the role the user is, insert into its respective table
+		-- FIXME: Depending on how many roles we have, fix this
+			IF @Role = 1
+				BEGIN
+					INSERT INTO Customer ([UserId])
+					VALUES (@UserId)
+				END
+			ELSE IF @Role = 2
+				BEGIN
+					INSERT INTO [Admin]([UserId], Email)
+						VALUES (@UserId, @Email)
+				END
+
+        -- Return the UserId to be used for logging in
+        SELECT @UserId AS UserId;
+    END TRY
+    BEGIN CATCH
+        -- Handle errors
+        THROW;
+    END CATCH
+END;
+GO
 
 /*==============================================================*/
 /* TABLE: "Order"                                               */
@@ -116,6 +228,124 @@ ProductName ASC
 GO
 
 /*==============================================================*/
+/* Stored procedure: GetProductById                                   */
+/*==============================================================*/
+-- =============================================
+-- Author:		Jude Mai
+-- Create date: 1/19/2025
+-- Description:	Getting the product from the ID
+-- =============================================
+CREATE PROCEDURE GetProductById 
+	-- Add the parameters for the stored procedure here
+	@ProductId INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT * FROM [GourmetShop].[dbo].[Product]
+	WHERE Id = @ProductId
+END
+GO
+
+/*==============================================================*/
+/* Stored procedure: GetProducts                                  */
+/*==============================================================*/
+-- =============================================
+-- Author:		<Jude Mai>
+-- Create date: <1/10/2025>
+-- Description:	<Get all products>
+-- =============================================
+CREATE PROCEDURE GetProducts 
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT * FROM [GourmetShop].[dbo].[Product]
+END
+GO
+
+/*==============================================================*/
+/* Stored procedure: AddProduct                                  */
+/*==============================================================*/
+-- =============================================
+-- =============================================
+-- Author:		<Jude Mai>
+-- Create date: <1/6/2025>
+-- Description:	Insert a new product in the Products table>
+-- =============================================
+CREATE PROCEDURE AddProduct
+	-- Add the parameters for the stored procedure here
+	@ProductName NVARCHAR(50),
+	@SupplierId INT,
+	@UnitPrice DECIMAL(12,2) = null,
+	@Package NVARCHAR(30) = null,
+	@IsDiscontinued BIT
+AS
+BEGIN
+	-- Insert statements for procedure here
+	-- https://stackoverflow.com/questions/14142320/use-stored-procedure-to-insert-some-data-into-a-table
+	INSERT INTO [GourmetShop].[dbo].[Product](ProductName, SupplierId, UnitPrice, Package, IsDiscontinued)
+	VALUES(@ProductName, @SupplierId, @UnitPrice, @Package, @IsDiscontinued)
+END
+GO
+
+/*==============================================================*/
+/* Stored procedure: UpdateProduct                               */
+/*==============================================================*/
+-- =============================================
+-- Author:		<Jude Mai>
+-- Create date: <1/7/2025>
+-- Description:	<Update a product in the Products table>
+-- =============================================
+CREATE PROCEDURE UpdateProduct
+	-- Add the parameters for the stored procedure here
+	@ProductId INT,
+	@ProductName NVARCHAR(50),
+	@SupplierId INT,
+	@UnitPrice DECIMAL(12,2) = null,
+	@Package NVARCHAR(30) = null,
+	@IsDiscontinued BIT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	UPDATE  [GourmetShop].[dbo].[Product] SET ProductName = @ProductName, SupplierId = @SupplierId, UnitPrice = @UnitPrice, Package = @Package, IsDiscontinued = @IsDiscontinued WHERE Id = @ProductId
+END
+GO
+
+/*==============================================================*/
+/* Stored procedure: DeleteProduct                                */
+/*==============================================================*/
+-- =============================================
+-- Author:		Jude Mai
+-- Create date: 1/21/2025
+-- Description:	Delete product by ID
+-- =============================================
+CREATE PROCEDURE DeleteProduct
+	-- Add the parameters for the stored procedure here
+	@ProductId INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	DELETE FROM [GourmetShop].[dbo].[Product] WHERE Id = @ProductId;
+END
+GO
+
+
+/*==============================================================*/
 /* TABLE: Supplier                                              */
 /*==============================================================*/
 CREATE TABLE Supplier (
@@ -147,6 +377,145 @@ Country ASC
 )
 GO
 
+/*==============================================================*/
+/* Stored procedure: GetSupplierById                                */
+/*==============================================================*/
+-- =============================================
+-- Author:		Jude Mai
+-- Create date: 1/19/2025
+-- Description:	Getting the supplier from the ID
+-- =============================================
+CREATE PROCEDURE GetSupplierById 
+	-- Add the parameters for the stored procedure here
+	@SupplierId INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT * FROM [GourmetShop].[dbo].[Supplier]
+	WHERE Id = @SupplierId
+END
+GO
+
+/*==============================================================*/
+/* Stored procedure: GetSuppliers                                */
+/*==============================================================*/
+-- =============================================
+-- Author:		<Jude Mai>
+-- Create date: <1/10/2025>
+-- Description:	<Get all suppliers>
+-- =============================================
+CREATE PROCEDURE GetSuppliers 
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	SELECT * FROM [GourmetShop].[dbo].[Supplier]
+END
+GO
+
+/*==============================================================*/
+/* Stored procedure: AddSupplier                              */
+/*==============================================================*/
+-- =============================================
+-- =============================================
+-- Author:		<Jude Mai>
+-- Create date: <1/6/2025>
+-- Description:	Insert new suppliers in the Suppliers table>
+-- =============================================
+CREATE PROCEDURE AddSupplier
+	-- Add the parameters for the stored procedure here
+	@CompanyName NVARCHAR(40),
+	@ContactName NVARCHAR(50) = null,
+    @ContactTitle NVARCHAR(40) = null,
+    @City NVARCHAR(40) = null,
+    @Country NVARCHAR(40) = null,
+    @Phone NVARCHAR(30)  =  null,
+    @Fax NVARCHAR(30) = null
+AS
+BEGIN
+    -- Insert statements for procedure here
+	-- https://stackoverflow.com/questions/14142320/use-stored-procedure-to-insert-some-data-into-a-table
+	INSERT INTO [GourmetShop].[dbo].[Supplier](CompanyName, ContactName, ContactTitle, City, Country, Phone, Fax)
+	VALUES(@CompanyName, @ContactName, @ContactTitle, @City, @Country, @Phone, @Fax)
+END
+GO
+
+/*==============================================================*/
+/* Stored procedure: UpdateSupplier                              */
+/*==============================================================*/
+-- =============================================
+-- Author:		<Jude Mai>
+-- Create date: <1/14/2025>
+-- Description:	<Update a supplier in the Suppliers table>
+-- =============================================
+CREATE PROCEDURE UpdateSupplier
+	-- Add the parameters for the stored procedure here
+	@SupplierId INT,
+	@CompanyName NVARCHAR(40),
+	@ContactName NVARCHAR(50) = null,
+    @ContactTitle NVARCHAR(40) = null,
+    @City NVARCHAR(40) = null,
+    @Country NVARCHAR(40) = null,
+    @Phone NVARCHAR(30)  =  null,
+    @Fax NVARCHAR(30) = null
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	UPDATE  [GourmetShop].[dbo].[Supplier] SET CompanyName = @CompanyName, ContactName = @ContactName, ContactTitle = @ContactTitle, City = @City , Country = @Country, Phone = @Phone, Fax = @Fax WHERE Id = @SupplierId
+END
+GO
+
+/*==============================================================*/
+/* Stored procedure: DeleteSupplier                              */
+/*==============================================================*/
+-- =============================================
+-- Author:		Jude Mai
+-- Create date: 1/21/2025
+-- Description:	Delete supplier by ID
+-- =============================================
+CREATE PROCEDURE DeleteSupplier
+	-- Add the parameters for the stored procedure here
+	@SupplierId INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	DELETE FROM [GourmetShop].[dbo].[Supplier] WHERE Id = @SupplierId;
+END
+GO
+
+/*==============================================================*/
+/* References                               */
+/*==============================================================*/
+ALTER TABLE "Admin"
+	ADD CONSTRAINT FK_ADMIN_REFERENCE_USER FOREIGN KEY (UserId) 
+		references [User](Id)
+GO
+
+ALTER TABLE "Customer"
+	ADD CONSTRAINT FK_CUSTOMER_REFERENCE_USER FOREIGN KEY (UserId) 
+		references [User](Id)
+GO
+
+ALTER TABLE "Login"
+	ADD CONSTRAINT FK_LOGIN_REFERENCE_USER FOREIGN KEY (UserId) 
+		references [User](Id)
+GO
+
 ALTER TABLE "Order"
    ADD CONSTRAINT FK_ORDER_REFERENCE_CUSTOMER foreign key (CustomerId)
       references Customer (Id)
@@ -171,101 +540,194 @@ GO
 -- ***************************************************
 -- **********************ADD DATA*********************
 -- ***************************************************
-
+SET IDENTITY_INSERT [User] ON
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(1,'Maria','Anders','Berlin','Germany','030-0074321')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(2,'Ana','Trujillo','México D.F.','Mexico','(5) 555-4729')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(3,'Antonio','Moreno','México D.F.','Mexico','(5) 555-3932')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(4,'Thomas','Hardy','London','UK','(171) 555-7788')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(5,'Christina','Berglund','Luleå','Sweden','0921-12 34 65')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(6,'Hanna','Moos','Mannheim','Germany','0621-08460')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(7,'Frédérique','Citeaux','Strasbourg','France','88.60.15.31')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(8,'Martín','Sommer','Madrid','Spain','(91) 555 22 82')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(9,'Laurence','Lebihan','Marseille','France','91.24.45.40')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(10,'Elizabeth','Lincoln','Tsawassen','Canada','(604) 555-4729')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(11,'Victoria','Ashworth','London','UK','(171) 555-1212')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(12,'Patricio','Simpson','Buenos Aires','Argentina','(1) 135-5555')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(13,'Francisco','Chang','México D.F.','Mexico','(5) 555-3392')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(14,'Yang','Wang','Bern','Switzerland','0452-076545')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(15,'Pedro','Afonso','Sao Paulo','Brazil','(11) 555-7647')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(16,'Elizabeth','Brown','London','UK','(171) 555-2282')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(17,'Sven','Ottlieb','Aachen','Germany','0241-039123')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(18,'Janine','Labrune','Nantes','France','40.67.88.88')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(19,'Ann','Devon','London','UK','(171) 555-0297')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(20,'Roland','Mendel','Graz','Austria','7675-3425')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(21,'Aria','Cruz','Sao Paulo','Brazil','(11) 555-9857')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(22,'Diego','Roel','Madrid','Spain','(91) 555 94 44')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(23,'Martine','Rancé','Lille','France','20.16.10.16')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(24,'Maria','Larsson','Bräcke','Sweden','0695-34 67 21')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(25,'Peter','Franken','München','Germany','089-0877310')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(26,'Carine','Schmitt','Nantes','France','40.32.21.21')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(27,'Paolo','Accorti','Torino','Italy','011-4988260')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(28,'Lino','Rodriguez','Lisboa','Portugal','(1) 354-2534')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(29,'Eduardo','Saavedra','Barcelona','Spain','(93) 203 4560')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(30,'José','Pedro Freyre','Sevilla','Spain','(95) 555 82 82')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(31,'André','Fonseca','Campinas','Brazil','(11) 555-9482')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(32,'Howard','Snyder','Eugene','USA','(503) 555-7555')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(33,'Manuel','Pereira','Caracas','Venezuela','(2) 283-2951')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(34,'Mario','Pontes','Rio de Janeiro','Brazil','(21) 555-0091')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(35,'Carlos','Hernández','San Cristóbal','Venezuela','(5) 555-1340')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(36,'Yoshi','Latimer','Elgin','USA','(503) 555-6874')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(37,'Patricia','McKenna','Cork','Ireland','2967 542')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(38,'Helen','Bennett','Cowes','UK','(198) 555-8888')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(39,'Philip','Cramer','Brandenburg','Germany','0555-09876')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(40,'Daniel','Tonini','Versailles','France','30.59.84.10')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(41,'Annette','Roulet','Toulouse','France','61.77.61.10')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(42,'Yoshi','Tannamuri','Vancouver','Canada','(604) 555-3392')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(43,'John','Steel','Walla Walla','USA','(509) 555-7969')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(44,'Renate','Messner','Frankfurt a.M.','Germany','069-0245984')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(45,'Jaime','Yorres','San Francisco','USA','(415) 555-5938')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(46,'Carlos','González','Barquisimeto','Venezuela','(9) 331-6954')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(47,'Felipe','Izquierdo','I. de Margarita','Venezuela','(8) 34-56-12')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(48,'Fran','Wilson','Portland','USA','(503) 555-9573')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(49,'Giovanni','Rovelli','Bergamo','Italy','035-640230')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(50,'Catherine','Dewey','Bruxelles','Belgium','(02) 201 24 67')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(51,'Jean','Fresnière','Montréal','Canada','(514) 555-8054')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(52,'Alexander','Feuer','Leipzig','Germany','0342-023176')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(53,'Simon','Crowther','London','UK','(171) 555-7733')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(54,'Yvonne','Moncada','Buenos Aires','Argentina','(1) 135-5333')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(55,'Rene','Phillips','Anchorage','USA','(907) 555-7584')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(56,'Henriette','Pfalzheim','Köln','Germany','0221-0644327')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(57,'Marie','Bertrand','Paris','France','(1) 42.34.22.66')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(58,'Guillermo','Fernández','México D.F.','Mexico','(5) 552-3745')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(59,'Georg','Pipps','Salzburg','Austria','6562-9722')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(60,'Isabel','de Castro','Lisboa','Portugal','(1) 356-5634')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(61,'Bernardo','Batista','Rio de Janeiro','Brazil','(21) 555-4252')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(62,'Lúcia','Carvalho','Sao Paulo','Brazil','(11) 555-1189')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(63,'Horst','Kloss','Cunewalde','Germany','0372-035188')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(64,'Sergio','Gutiérrez','Buenos Aires','Argentina','(1) 123-5555')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(65,'Paula','Wilson','Albuquerque','USA','(505) 555-5939')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(66,'Maurizio','Moroni','Reggio Emilia','Italy','0522-556721')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(67,'Janete','Limeira','Rio de Janeiro','Brazil','(21) 555-3412')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(68,'Michael','Holz','Genève','Switzerland','0897-034214')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(69,'Alejandra','Camino','Madrid','Spain','(91) 745 6200')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(70,'Jonas','Bergulfsen','Stavern','Norway','07-98 92 35')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(71,'Jose','Pavarotti','Boise','USA','(208) 555-8097')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(72,'Hari','Kumar','London','UK','(171) 555-1717')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(73,'Jytte','Petersen','Kobenhavn','Denmark','31 12 34 56')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(74,'Dominique','Perrier','Paris','France','(1) 47.55.60.10')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(75,'Art','Braunschweiger','Lander','USA','(307) 555-4680')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(76,'Pascale','Cartrain','Charleroi','Belgium','(071) 23 67 22 20')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(77,'Liz','Nixon','Portland','USA','(503) 555-3612')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(78,'Liu','Wong','Butte','USA','(406) 555-5834')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(79,'Karin','Josephs','Münster','Germany','0251-031259')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(80,'Miguel','Angel Paolino','México D.F.','Mexico','(5) 555-2933')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(81,'Anabela','Domingues','Sao Paulo','Brazil','(11) 555-2167')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(82,'Helvetius','Nagy','Kirkland','USA','(206) 555-8257')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(83,'Palle','Ibsen','Århus','Denmark','86 21 32 43')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(84,'Mary','Saveley','Lyon','France','78.32.54.86')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(85,'Paul','Henriot','Reims','France','26.47.15.10')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(86,'Rita','Müller','Stuttgart','Germany','0711-020361')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(87,'Pirkko','Koskitalo','Oulu','Finland','981-443655')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(88,'Paula','Parente','Resende','Brazil','(14) 555-8122')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(89,'Karl','Jablonski','Seattle','USA','(206) 555-4112')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(90,'Matti','Karttunen','Helsinki','Finland','90-224 8858')
+INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(91,'Zbyszek','Piestrzeniewicz','Warszawa','Poland','(26) 642-7012')
+SET IDENTITY_INSERT [User] OFF
 
 SET IDENTITY_INSERT Customer ON
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(1,'Maria','Anders','Berlin','Germany','030-0074321')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(2,'Ana','Trujillo','México D.F.','Mexico','(5) 555-4729')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(3,'Antonio','Moreno','México D.F.','Mexico','(5) 555-3932')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(4,'Thomas','Hardy','London','UK','(171) 555-7788')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(5,'Christina','Berglund','Luleå','Sweden','0921-12 34 65')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(6,'Hanna','Moos','Mannheim','Germany','0621-08460')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(7,'Frédérique','Citeaux','Strasbourg','France','88.60.15.31')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(8,'Martín','Sommer','Madrid','Spain','(91) 555 22 82')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(9,'Laurence','Lebihan','Marseille','France','91.24.45.40')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(10,'Elizabeth','Lincoln','Tsawassen','Canada','(604) 555-4729')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(11,'Victoria','Ashworth','London','UK','(171) 555-1212')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(12,'Patricio','Simpson','Buenos Aires','Argentina','(1) 135-5555')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(13,'Francisco','Chang','México D.F.','Mexico','(5) 555-3392')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(14,'Yang','Wang','Bern','Switzerland','0452-076545')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(15,'Pedro','Afonso','Sao Paulo','Brazil','(11) 555-7647')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(16,'Elizabeth','Brown','London','UK','(171) 555-2282')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(17,'Sven','Ottlieb','Aachen','Germany','0241-039123')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(18,'Janine','Labrune','Nantes','France','40.67.88.88')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(19,'Ann','Devon','London','UK','(171) 555-0297')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(20,'Roland','Mendel','Graz','Austria','7675-3425')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(21,'Aria','Cruz','Sao Paulo','Brazil','(11) 555-9857')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(22,'Diego','Roel','Madrid','Spain','(91) 555 94 44')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(23,'Martine','Rancé','Lille','France','20.16.10.16')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(24,'Maria','Larsson','Bräcke','Sweden','0695-34 67 21')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(25,'Peter','Franken','München','Germany','089-0877310')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(26,'Carine','Schmitt','Nantes','France','40.32.21.21')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(27,'Paolo','Accorti','Torino','Italy','011-4988260')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(28,'Lino','Rodriguez','Lisboa','Portugal','(1) 354-2534')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(29,'Eduardo','Saavedra','Barcelona','Spain','(93) 203 4560')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(30,'José','Pedro Freyre','Sevilla','Spain','(95) 555 82 82')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(31,'André','Fonseca','Campinas','Brazil','(11) 555-9482')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(32,'Howard','Snyder','Eugene','USA','(503) 555-7555')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(33,'Manuel','Pereira','Caracas','Venezuela','(2) 283-2951')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(34,'Mario','Pontes','Rio de Janeiro','Brazil','(21) 555-0091')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(35,'Carlos','Hernández','San Cristóbal','Venezuela','(5) 555-1340')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(36,'Yoshi','Latimer','Elgin','USA','(503) 555-6874')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(37,'Patricia','McKenna','Cork','Ireland','2967 542')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(38,'Helen','Bennett','Cowes','UK','(198) 555-8888')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(39,'Philip','Cramer','Brandenburg','Germany','0555-09876')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(40,'Daniel','Tonini','Versailles','France','30.59.84.10')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(41,'Annette','Roulet','Toulouse','France','61.77.61.10')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(42,'Yoshi','Tannamuri','Vancouver','Canada','(604) 555-3392')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(43,'John','Steel','Walla Walla','USA','(509) 555-7969')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(44,'Renate','Messner','Frankfurt a.M.','Germany','069-0245984')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(45,'Jaime','Yorres','San Francisco','USA','(415) 555-5938')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(46,'Carlos','González','Barquisimeto','Venezuela','(9) 331-6954')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(47,'Felipe','Izquierdo','I. de Margarita','Venezuela','(8) 34-56-12')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(48,'Fran','Wilson','Portland','USA','(503) 555-9573')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(49,'Giovanni','Rovelli','Bergamo','Italy','035-640230')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(50,'Catherine','Dewey','Bruxelles','Belgium','(02) 201 24 67')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(51,'Jean','Fresnière','Montréal','Canada','(514) 555-8054')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(52,'Alexander','Feuer','Leipzig','Germany','0342-023176')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(53,'Simon','Crowther','London','UK','(171) 555-7733')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(54,'Yvonne','Moncada','Buenos Aires','Argentina','(1) 135-5333')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(55,'Rene','Phillips','Anchorage','USA','(907) 555-7584')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(56,'Henriette','Pfalzheim','Köln','Germany','0221-0644327')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(57,'Marie','Bertrand','Paris','France','(1) 42.34.22.66')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(58,'Guillermo','Fernández','México D.F.','Mexico','(5) 552-3745')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(59,'Georg','Pipps','Salzburg','Austria','6562-9722')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(60,'Isabel','de Castro','Lisboa','Portugal','(1) 356-5634')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(61,'Bernardo','Batista','Rio de Janeiro','Brazil','(21) 555-4252')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(62,'Lúcia','Carvalho','Sao Paulo','Brazil','(11) 555-1189')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(63,'Horst','Kloss','Cunewalde','Germany','0372-035188')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(64,'Sergio','Gutiérrez','Buenos Aires','Argentina','(1) 123-5555')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(65,'Paula','Wilson','Albuquerque','USA','(505) 555-5939')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(66,'Maurizio','Moroni','Reggio Emilia','Italy','0522-556721')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(67,'Janete','Limeira','Rio de Janeiro','Brazil','(21) 555-3412')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(68,'Michael','Holz','Genève','Switzerland','0897-034214')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(69,'Alejandra','Camino','Madrid','Spain','(91) 745 6200')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(70,'Jonas','Bergulfsen','Stavern','Norway','07-98 92 35')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(71,'Jose','Pavarotti','Boise','USA','(208) 555-8097')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(72,'Hari','Kumar','London','UK','(171) 555-1717')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(73,'Jytte','Petersen','Kobenhavn','Denmark','31 12 34 56')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(74,'Dominique','Perrier','Paris','France','(1) 47.55.60.10')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(75,'Art','Braunschweiger','Lander','USA','(307) 555-4680')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(76,'Pascale','Cartrain','Charleroi','Belgium','(071) 23 67 22 20')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(77,'Liz','Nixon','Portland','USA','(503) 555-3612')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(78,'Liu','Wong','Butte','USA','(406) 555-5834')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(79,'Karin','Josephs','Münster','Germany','0251-031259')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(80,'Miguel','Angel Paolino','México D.F.','Mexico','(5) 555-2933')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(81,'Anabela','Domingues','Sao Paulo','Brazil','(11) 555-2167')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(82,'Helvetius','Nagy','Kirkland','USA','(206) 555-8257')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(83,'Palle','Ibsen','Århus','Denmark','86 21 32 43')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(84,'Mary','Saveley','Lyon','France','78.32.54.86')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(85,'Paul','Henriot','Reims','France','26.47.15.10')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(86,'Rita','Müller','Stuttgart','Germany','0711-020361')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(87,'Pirkko','Koskitalo','Oulu','Finland','981-443655')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(88,'Paula','Parente','Resende','Brazil','(14) 555-8122')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(89,'Karl','Jablonski','Seattle','USA','(206) 555-4112')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(90,'Matti','Karttunen','Helsinki','Finland','90-224 8858')
-INSERT INTO [Customer] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(91,'Zbyszek','Piestrzeniewicz','Warszawa','Poland','(26) 642-7012')
+INSERT INTO [Customer] ([Id],[UserId])VALUES(1,1)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(2,2)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(3,3)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(4,4)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(5,5)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(6,6)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(7,7)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(8,8)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(9,9)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(10,10)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(11,11)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(12,12)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(13,13)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(14,14)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(15,15)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(16,16)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(17,17)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(18,18)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(19,19)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(20,20)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(21,21)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(22,22)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(23,23)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(24,24)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(25,25)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(26,26)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(27,27)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(28,28)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(29,29)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(30,30)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(31,31)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(32,32)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(33,33)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(34,34)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(35,35)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(36,36)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(37,37)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(38,38)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(39,39)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(40,40)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(41,41)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(42,42)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(43,43)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(44,44)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(45,45)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(46,46)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(47,47)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(48,48)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(49,49)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(50,50)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(51,51)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(52,52)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(53,53)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(54,54)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(55,55)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(56,56)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(57,57)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(58,58)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(59,59)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(60,60)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(61,61)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(62,62)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(63,63)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(64,64)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(65,65)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(66,66)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(67,67)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(68,68)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(69,69)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(70,70)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(71,71)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(72,72)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(73,73)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(74,74)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(75,75)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(76,76)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(77,77)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(78,78)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(79,79)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(80,80)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(81,81)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(82,82)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(83,83)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(84,84)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(85,85)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(86,86)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(87,87)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(88,88)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(89,89)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(90,90)
+INSERT INTO [Customer] ([Id],[UserId])VALUES(91,91)
 SET IDENTITY_INSERT Customer OFF
+
 SET IDENTITY_INSERT Supplier ON
 INSERT INTO [Supplier] ([Id],[CompanyName],[ContactName],[City],[Country],[Phone],[Fax])VALUES(1,'Exotic Liquids','Charlotte Cooper','London','UK','(171) 555-2222',NULL)
 INSERT INTO [Supplier] ([Id],[CompanyName],[ContactName],[City],[Country],[Phone],[Fax])VALUES(2,'New Orleans Cajun Delights','Shelley Burke','New Orleans','USA','(100) 555-4822',NULL)
