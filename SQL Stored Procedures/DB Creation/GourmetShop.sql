@@ -7,26 +7,34 @@ USE GourmetShop
 GO
 
 /*==============================================================*/
-/* TABLE: Customer                                              */
+/* TABLE: User                                              */
 /*==============================================================*/
 CREATE TABLE [User] (
    Id                   int                  IDENTITY,
-   [Role]				int		DEFAULT 1 NOT NULL,
+   [RoleId]				int		DEFAULT 1 NOT NULL,
    FirstName            NVARCHAR(50)         not null,
    LastName             NVARCHAR(50)         not null,
    City                 NVARCHAR(40)         null,
    Country              NVARCHAR(40)         null,
    Phone                NVARCHAR(20)         null,
    CONSTRAINT PK_USER primary key (Id),
-   CONSTRAINT CHK_ROLE CHECK([Role] IN (1, 2)) -- 1: Customer, 2: Admin
 )
 go
 
 /*==============================================================*/
-/* TABLE: Roles                                             */
+/* TODO */
+/* Stored procedure: GetUsersByRole                                */
+	
+	-- Parameter: Role
+	-- Filter the users by the role from the User table and return them
 /*==============================================================*/
-CREATE TABLE Roles (
-    RoleId INT PRIMARY KEY,       
+
+
+/*==============================================================*/
+/* TABLE: Role                                             */
+/*==============================================================*/
+CREATE TABLE Role (
+    Id INT IDENTITY(1,1) PRIMARY KEY,       
     RoleName NVARCHAR(50) UNIQUE  
 );
 
@@ -54,6 +62,15 @@ CREATE TABLE [Admin] (
 go
 
 /*==============================================================*/
+/* Index: IndexAdminUserId                                  */
+-- For faster querying with admin based on user  
+/*==============================================================*/
+CREATE INDEX IndexAdminUserId ON "Admin" (
+UserId ASC
+)
+go
+
+/*==============================================================*/
 /* TABLE: Customer                                              */
 /*==============================================================*/
 CREATE TABLE Customer (
@@ -64,28 +81,33 @@ CREATE TABLE Customer (
 go
 
 /*==============================================================*/
-/* TODO - Index: For faster querying with customer based on user                                */
+/* Index: IndexCustomerUserId                                  */
+-- For faster querying with customer based on user  
 /*==============================================================*/
+CREATE INDEX IndexCustomerUserId ON "Customer" (
+UserId ASC
+)
+go
 
 /*==============================================================*/
 /* TABLE: ShoppingCart                                             */
 /*==============================================================*/
 
 CREATE TABLE ShoppingCart (
-    CartID INT IDENTITY(1,1) PRIMARY KEY,
-    CustomerID INT NOT NULL,  -- Foreign key reference to Customers table
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    CustomerId INT NOT NULL,  -- Foreign key reference to Customers table
     CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
-    
 );
 go
+
 /*==============================================================*/
 /* TABLE: Shopping Cart Details                                          */
 /*==============================================================*/
 
 CREATE TABLE ShoppingCartDetails (
-    DetailID INT IDENTITY(1,1) PRIMARY KEY,
-    CartID INT NOT NULL,  -- Links to ShoppingCart
-    ProductID INT NOT NULL,  -- Links to Products
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    CartId INT NOT NULL,  -- Links to ShoppingCart
+    ProductId INT NOT NULL,  -- Links to Products
     Quantity INT NOT NULL,
     Price DECIMAL(12,2) NOT NULL,
    -- TotalPrice AS (Quantity * UnitPrice) PERSISTED,
@@ -98,10 +120,10 @@ go
 /* TABLE: Login                                           */
 /*==============================================================*/
 CREATE TABLE [dbo].[Login](
-	[ID] [int] IDENTITY NOT NULL,
-	[UserID] [int] NOT NULL,
+	[Id] [int] IDENTITY NOT NULL,
+	[UserId] [int] NOT NULL,
 	[Username] [nvarchar](50) NOT NULL,
-	[PasswordHash] [nvarchar](255) NOT NULL,
+	[Password] [nvarchar](255) NOT NULL,
 )
 go
 
@@ -117,19 +139,28 @@ go
 
 
 /*==============================================================*/
-/* Stored procedure: CreateLogin                                */
+/* Stored procedure: Register                                */
 /*==============================================================*/
 
---CHECKME  ( Checking to make sure this works with role id)
+/*==============================================================*/
+-- CHECKME: Make sure all the cases work, user without existing login can register
+
+-- FIXED: 
+-- The default role should be customer, the other role should be admin per how the table's set up. 
+-- Also it shouldn't be easier to make an admin account than a customer. 
+-- Removed some unnecessary variables.
+/*==============================================================*/
 GO
-CREATE PROCEDURE CreateLogin
-    @Role INT, -- 1 for Admin, 2 for Customer
+CREATE PROCEDURE Register
+    @RoleId INT, -- 1 for Customer, 2 for Login
     @FirstName NVARCHAR(50),
     @LastName NVARCHAR(50),
     @City NVARCHAR(50) = NULL,
     @Country NVARCHAR(50) = NULL,
     @Phone NVARCHAR(15) = NULL,
-    @Email NVARCHAR(100) = NULL, -- For Admin users only
+    
+	@Email NVARCHAR(100) = NULL, -- For Admin users only
+
     @Username NVARCHAR(50),
     @Password NVARCHAR(255) -- Should already be hashed
 AS
@@ -137,72 +168,94 @@ BEGIN
     SET NOCOUNT ON;
 
     DECLARE @UserId INT;
-    DECLARE @CustomerId INT;
-    DECLARE @AdminId INT;
 
     BEGIN TRY
-        -- Step 1: Check if a user with this username already exists in the Login table
+        -- Existing user with login check to make sure you don't make the same account twice
         IF EXISTS (
             SELECT 1 FROM Login WHERE Username = @Username
         )
         BEGIN
             RAISERROR('A user with this username already exists.', 16, 1);
-            RETURN;
+			RETURN;
         END
 
-        -- Step 2: Check if the user already exists in the Users table based on Phone
-        SELECT @UserId = UserId
-        FROM Users
-        WHERE Phone = @Phone;
+        -- Existing user data without an account check, phone number should be unique for every user then
+        IF NOT EXISTS (
+			SELECT 1
+			FROM [User]
+			WHERE Phone = @Phone AND FirstName = @FirstName AND LastName = @LastName
+		)
+			BEGIN
+				-- Step 3: New User - Insert into Users table
+				INSERT INTO [User] (RoleId, FirstName, LastName, City, Country, Phone)
+				VALUES (@RoleId, @FirstName, @LastName, @City, @Country, @Phone);
 
-        IF @UserId IS NOT NULL
+				SET @UserId = SCOPE_IDENTITY(); -- Get the newly generated UserId
+			END
+		ELSE
+			BEGIN
+				-- Grab the already existing user
+				SELECT @UserId = Id
+				FROM [User]
+				WHERE Phone = @Phone;
+			END
+
+		IF @UserId IS NULL
+		BEGIN
+            RAISERROR('No user exists.', 16, 1);
+			RETURN;
+        END
+
+		-- Guard clause to check whether user already exists, this should be fine because on the UI side, one must choose the role of the user
+		-- This setup is to mitigate issues with already existing no-login-account users
+		 IF EXISTS (
+            SELECT 1 FROM Login WHERE UserId = @UserId
+        )
         BEGIN
-            -- Existing User: Check role-specific tables for Admin or Customer
-            IF @Role = 2 -- Customer
-            BEGIN
-                SELECT @CustomerId = Id
-                FROM Customer
-                WHERE UserId = @UserId;
-            END
-            ELSE IF @Role = 1 -- Admin
-            BEGIN
-                SELECT @AdminId = AdminId
-                FROM Admin
-                WHERE UserId = @UserId;
-            END
-        END
-        ELSE
-        BEGIN
-            -- Step 3: New User - Insert into Users table
-            INSERT INTO Users (FirstName, LastName, City, Country, Phone, RoleId)
-            VALUES (@FirstName, @LastName, @City, @Country, @Phone, @Role);
-
-            SET @UserId = SCOPE_IDENTITY(); -- Get the newly generated UserId
+            RAISERROR('A login with this user already exists.', 16, 1);
+			RETURN;
         END
 
-        -- Step 4: Handle role-specific entries
-        IF @Role = 2 AND @CustomerId IS NULL
-        BEGIN
-            -- Insert into Customer table if not already there
-            INSERT INTO Customer (UserId)
-            VALUES (@UserId);
-
-            SET @CustomerId = SCOPE_IDENTITY();
-        END
-        ELSE IF @Role = 1 AND @AdminId IS NULL
-        BEGIN
-            -- Insert into Admin table if not already there
-            INSERT INTO Admin (UserId, Email)
-            VALUES (@UserId, @Email);
-
-            SET @AdminId = SCOPE_IDENTITY();
-        END
-
-        -- Step 5: Insert login credentials into Login table
-        INSERT INTO Login (UserId, Username, PasswordHash)
+        -- Insert login credentials into Login table
+        INSERT INTO Login (UserId, Username, Password)
         VALUES (@UserId, @Username, @Password);
 
-        -- Optional: Return the newly added or updated UserId
+		BEGIN
+			-- Existing User: Check role-specific tables for Admin or Customer
+			IF @RoleId = 1 -- Customer
+			BEGIN
+				IF EXISTS (
+					SELECT 1 FROM Customer WHERE UserId = @UserId
+				)
+				BEGIN
+					RAISERROR('A customer already exists.', 16, 1);
+					RETURN;
+				END
+
+				BEGIN
+					INSERT INTO Customer (UserId)
+					VALUES (@UserId);
+				END
+			END
+			ELSE IF @RoleId = 2 -- Admin
+				BEGIN
+					IF EXISTS (
+						SELECT 1 FROM Admin WHERE UserId = @UserId
+					)
+					BEGIN
+						RAISERROR('An admin already exists.', 16, 1);
+						RETURN;
+					END
+
+					BEGIN
+						-- Insert into Admin table if not already there
+						INSERT INTO Admin (UserId, Email)
+						VALUES (@UserId, @Email);
+					END
+			END
+		END
+
+        -- Optional: Return the newly added or updated user Id
         SELECT @UserId AS UserId;
     END TRY
     BEGIN CATCH
@@ -574,6 +627,11 @@ GO
 /*==============================================================*/
 /* References                               */
 /*==============================================================*/
+ALTER TABLE "User"
+	ADD CONSTRAINT FK_USER_REFERENCE_ROLE FOREIGN KEY (RoleId) 
+		references [Role](Id)
+GO
+
 ALTER TABLE "Admin"
 	ADD CONSTRAINT FK_ADMIN_REFERENCE_USER FOREIGN KEY (UserId) 
 		references [User](Id)
@@ -595,12 +653,12 @@ ALTER TABLE "Order"
 GO
 
 ALTER TABLE OrderItem
-   ADD CONSTRAINT FK_ORDERITE_REFERENCE_ORDER foreign key (OrderId)
+   ADD CONSTRAINT FK_ORDERITEM_REFERENCE_ORDER foreign key (OrderId)
       references "Order" (Id)
 GO
 
 ALTER TABLE OrderItem
-   ADD CONSTRAINT FK_ORDERITE_REFERENCE_PRODUCT foreign key (ProductId)
+   ADD CONSTRAINT FK_ORDERITEM_REFERENCE_PRODUCT foreign key (ProductId)
       references Product (Id)
 GO
 
@@ -610,17 +668,18 @@ ALTER TABLE Product
 GO
 
 ALTER TABLE ShoppingCartDetails
-   ADD CONSTRAINT FK_ShoppingCartDetails_Cart FOREIGN KEY (CartID) REFERENCES ShoppingCart(CartID) ON DELETE CASCADE
+   ADD CONSTRAINT FK_SHOPPING_CART_DETAILS_REFERENCE_CART FOREIGN KEY (CartId) 
+		REFERENCES ShoppingCart(Id) ON DELETE CASCADE
 GO
 
 ALTER TABLE ShoppingCartDetails
-    ADD CONSTRAINT FK_ShoppingCartDetails_Product FOREIGN KEY (ProductID) REFERENCES Product(ID)
-
+    ADD CONSTRAINT FK_SHOPPING_CART_DETAILS_REFERENCE_PRODUCT FOREIGN KEY (ProductId) 
+		REFERENCES Product(Id)
 GO
 
 ALTER TABLE ShoppingCart
- ADD CONSTRAINT FK_ShoppingCart_Customer FOREIGN KEY (CustomerID) REFERENCES Customer(ID) ON DELETE CASCADE
-
+ ADD CONSTRAINT FK_SHOPPING_CART_REFERENCE_CUSTOMER FOREIGN KEY (CustomerId) 
+	REFERENCES Customer(Id) ON DELETE CASCADE
  GO
 
 
@@ -629,6 +688,12 @@ ALTER TABLE ShoppingCart
 -- ***************************************************
 -- **********************ADD DATA*********************
 -- ***************************************************
+-- FIXED: Originally was called Supplier, now changed to Admin. Set IDENTITY_INSERT to OFF so that the User can autocreate that foreign key
+SET IDENTITY_INSERT [Role] OFF
+INSERT INTO Role (RoleName) VALUES 
+('Customer'),
+('Admin');
+
 SET IDENTITY_INSERT [User] ON
 INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(1,'Maria','Anders','Berlin','Germany','030-0074321')
 INSERT INTO [User] ([Id],[FirstName],[LastName],[City],[Country],[Phone])VALUES(2,'Ana','Trujillo','México D.F.','Mexico','(5) 555-4729')
@@ -3917,11 +3982,3 @@ INSERT INTO [OrderItem] ([Id],[OrderId],[ProductId],[UnitPrice],[Quantity])VALUE
 INSERT INTO [OrderItem] ([Id],[OrderId],[ProductId],[UnitPrice],[Quantity])VALUES(2154,830,75,7.75,4)
 INSERT INTO [OrderItem] ([Id],[OrderId],[ProductId],[UnitPrice],[Quantity])VALUES(2155,830,77,13.00,2)
 SET IDENTITY_INSERT [OrderItem] OFF
-
---CHECKME--
-
-SET IDENTITY_INSERT [Roles] ON
-INSERT INTO Roles (RoleId, RoleName)
-VALUES (1, 'Customer'), (2, 'Admin');
-
-SET IDENTITY_INSERT [Roles] OFF
