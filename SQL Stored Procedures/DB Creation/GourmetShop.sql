@@ -27,6 +27,7 @@ go
 	
 	-- Parameter: Role
 	-- Filter the users by the role from the User table and return them
+
 /*==============================================================*/
 
 
@@ -71,6 +72,77 @@ UserId ASC
 go
 
 /*==============================================================*/
+/* Stored procedure: Admin Control: Filter through sales by customer              */
+/*==============================================================*/
+
+/*==============================================================*/
+
+-- CHECKME: Make sure all the cases work
+
+/*==============================================================*/
+--Description : This would be used to filter through the customers displayed by GetAllCustomers
+--and allow the admin to see the customer id, a list of products they have purchased, the total quanitiy purchased of that product, along with the total amount the customer has spent.
+--given we use a data grid view when a row is selected we would call to this stored procedure and show important sales information in a label.
+
+CREATE PROCEDURE FilterThroughCustomerOrders
+    @CustomerID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Variable to hold the total amount spent by the customer
+    DECLARE @TotalSpent DECIMAL(12, 2);
+
+    BEGIN TRY
+        -- Get the list of products purchased by the customer and the total amount spent per product
+        SELECT 
+            p.ProductName AS ProductName,
+            SUM(oi.Quantity) AS TotalQuantityPurchased,
+            oi.UnitPrice AS UnitPrice,
+            SUM(oi.Quantity * oi.UnitPrice) AS TotalAmountSpentPerProduct
+        FROM 
+            Customer c
+        INNER JOIN 
+            [Order] o ON c.Id = o.CustomerId
+        INNER JOIN 
+            OrderItem oi ON o.Id = oi.OrderId
+        INNER JOIN 
+            Product p ON oi.ProductId = p.Id
+        WHERE 
+            c.Id = @CustomerID
+        GROUP BY 
+            p.ProductName, oi.UnitPrice
+        ORDER BY 
+            p.ProductName; -- Optional: Sort products by name
+
+        -- Calculate the total amount spent by the customer
+        SELECT 
+            @TotalSpent = SUM(oi.Quantity * oi.UnitPrice)
+        FROM 
+            Customer c
+        INNER JOIN 
+            [Order] o ON c.Id = o.CustomerId
+        INNER JOIN 
+            OrderItem oi ON o.Id = oi.OrderId
+        WHERE 
+            c.Id = @CustomerID;
+
+        -- Return the total amount spent by the customer
+        SELECT @TotalSpent AS TotalAmountSpent;
+
+    END TRY
+    BEGIN CATCH
+        -- Handle any errors that occur
+        THROW;
+    END CATCH
+END;
+GO
+
+
+
+
+
+/*==============================================================*/
 /* TABLE: Customer                                              */
 /*==============================================================*/
 CREATE TABLE Customer (
@@ -88,6 +160,44 @@ CREATE INDEX IndexCustomerUserId ON "Customer" (
 UserId ASC
 )
 go
+
+
+/*==============================================================*/
+/* Stored procedure: Get all Customers                             */
+/*==============================================================*/
+
+/*==============================================================*/
+-- CHECKME: Make sure all the cases work
+
+/*==============================================================*/
+
+--Description: --this would be used in the admin view if we want the admin to view the customers 
+
+CREATE PROCEDURE GetAllCustomers
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        -- Retrieve all customers (CustomerId and Name from the User table)
+        SELECT 
+            C.Id AS CustomerId, 
+            U.FirstName, 
+            U.LastName
+        FROM 
+            Customer C
+        INNER JOIN 
+            Users U ON C.UserId = U.UserId
+        ORDER BY 
+            U.FirstName; -- Optional: Sort customers by first name
+    END TRY
+    BEGIN CATCH
+        -- Handle any errors that occur
+        THROW;
+    END CATCH
+END;
+GO
+
 
 /*==============================================================*/
 /* TABLE: ShoppingCart                                             */
@@ -115,6 +225,212 @@ CREATE TABLE ShoppingCartDetails (
 );
 
 go
+
+/*==============================================================*/
+/* Stored procedure: Add To Shopping Cart                              */
+/*==============================================================*/
+
+/*==============================================================*/
+-- CHECKME: Make sure all the cases work
+
+/*==============================================================*/
+
+--Description: This stored procedure would be called when the customer presses the 'add to cart' button 
+--It will create the cart and add the product to there cart.
+
+CREATE PROCEDURE AddToCart
+    @CustomerID INT,
+    @ProductID INT,
+    @Quantity INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @CartID INT;
+    DECLARE @Price DECIMAL(12, 2);
+
+    BEGIN TRY
+        -- Get the price of the product
+        SELECT @Price = UnitPrice FROM Product WHERE Id = @ProductID;
+
+        IF @Price IS NULL
+        BEGIN
+            THROW 50001, 'Product not found.', 1;
+        END
+
+        -- Check if customer has an active shopping cart
+        SELECT @CartID = ID 
+        FROM ShoppingCart 
+        WHERE CustomerID = @CustomerID;
+
+        -- If no active cart, create one with CreatedDate
+        IF @CartID IS NULL
+        BEGIN
+            INSERT INTO ShoppingCart (CustomerID, CreatedDate)
+            VALUES (@CustomerID, GETDATE());
+
+            SET @CartID = SCOPE_IDENTITY();
+        END
+
+        -- Check if product already exists in cart
+        IF EXISTS (SELECT 1 FROM ShoppingCartDetails WHERE CartID = @CartID AND ProductID = @ProductID)
+        BEGIN
+            -- Update quantity
+            UPDATE ShoppingCartDetails
+            SET Quantity = Quantity + @Quantity, 
+                Price = @Price
+            WHERE CartID = @CartID AND ProductID = @ProductID;
+        END
+        ELSE
+        BEGIN
+            -- Insert new item
+            INSERT INTO ShoppingCartDetails (CartID, ProductID, Quantity, Price)
+            VALUES (@CartID, @ProductID, @Quantity, @Price);
+        END
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+
+GO
+
+
+/*==============================================================*/
+/* Stored procedure: Update Cart                       */
+/*==============================================================*/
+
+/*==============================================================*/
+-- CHECKME: Make sure all the cases work
+
+/*==============================================================*/
+
+--Description: Updates quanity amount (would allow customer to update quantity amount in the shopping cart view)
+--This stored procedure allows the customer to update there quanity directly in the shopping cart view
+-- so when they are viewing there shopping cart and edit the quantity either adding or deleting directly in there this would be used.
+
+
+
+CREATE PROCEDURE UpdateCartItemQuantity
+    @CartID INT,
+    @ProductID INT,
+    @NewQuantity INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        -- Update quantity only
+        UPDATE ShoppingCartDetails
+        SET Quantity = @NewQuantity
+        WHERE CartID = @CartID AND ProductID = @ProductID;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+
+
+/*==============================================================*/
+/* Stored procedure: Delete Item From Cart                       */
+/*==============================================================*/
+
+/*==============================================================*/
+-- CHECKME: Make sure all the cases work
+
+/*==============================================================*/
+
+--Description: this stored procedure deletes a product from the cart
+-- so if the customer wants to delete the entire product they would simply select the row (given we use a data grid view) and press the delete proudct from cart button.
+
+
+CREATE PROCEDURE RemoveFromCart
+    @CartID INT,
+    @ProductID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        -- Remove product from cart details
+        DELETE FROM ShoppingCartDetails
+        WHERE CartID = @CartID AND ProductID = @ProductID;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+
+GO
+
+
+/*==============================================================*/
+/* Stored procedure: Clear entire cart                     */
+/*==============================================================*/
+
+/*==============================================================*/
+-- CHECKME: Make sure all the cases work
+/*==============================================================*/
+
+--Description: --This stored procedure is optional and can be used if we have a clear cart button 
+--where the customer is able to delete all the items in there cart.
+
+CREATE PROCEDURE ClearCart
+    @CartID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        -- Delete all items from cart details
+        DELETE FROM ShoppingCartDetails WHERE CartID = @CartID;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+
+GO
+
+/*==============================================================*/
+/* Stored procedure: View Cart                 */
+/*==============================================================*/
+
+/*==============================================================*/
+-- CHECKME: Make sure all the cases work
+
+/*==============================================================*/
+--Description : --This allows the user to view cart once they press the button view cart this would be called and used.
+
+
+CREATE PROCEDURE ViewCart
+    @CartID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    BEGIN TRY
+        -- Retrieve cart details along with product name, quantity, and price
+        SELECT 
+            p.ProductName,
+            scd.Quantity,
+            scd.Price,
+            scd.ProductID,  -- You need the ProductID to update or delete a specific item
+            scd.CartID      -- You need the CartID to identify the user's cart
+        FROM ShoppingCartDetails scd
+        INNER JOIN Product p ON scd.ProductID = p.Id
+        WHERE scd.CartID = @CartID;  -- Filter by the CartID to show only the user's cart items
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
+GO
+
+
+
+
 
 /*==============================================================*/
 /* TABLE: Login                                           */
@@ -308,6 +624,76 @@ CREATE TABLE OrderItem (
 go
 
 /*==============================================================*/
+/* Stored procedure: Place Order                */
+/*==============================================================*/
+
+/*==============================================================*/
+-- CHECKME: Make sure all the cases work
+
+/*==============================================================*/
+--Description : --This stored procedure would be used when the customer presses the button 'Place order'
+--from there the information from the cart is put into the order and order details table.
+
+CREATE PROCEDURE PlaceOrder
+    @CustomerId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @OrderNumber INT;
+    DECLARE @TotalAmount DECIMAL(12, 2) = 0;
+
+    BEGIN TRY
+        -- Step 1: Get the last order number from the entire Order table
+        DECLARE @LastOrderNumber INT;
+        SELECT @LastOrderNumber = MAX(CAST(OrderNumber AS INT))
+        FROM "Order";
+
+        -- Step 2: Increment the last order number by 1 for the new order
+        SET @OrderNumber = @LastOrderNumber + 1;
+
+        -- Step 3: Calculate the total amount from the ShoppingCartDetails for this customer
+        SELECT @TotalAmount = SUM(SCD.Quantity * SCD.Price)
+        FROM ShoppingCartDetails SCD
+        INNER JOIN ShoppingCart SC ON SCD.CartID = SC.ID
+        WHERE SC.CustomerID = @CustomerId;
+
+        -- Step 4: Create a new order in the "Order" table with the generated OrderNumber and calculated TotalAmount
+        INSERT INTO "Order" (OrderDate, OrderNumber, CustomerId, TotalAmount)
+        VALUES (GETDATE(), @OrderNumber, @CustomerId, @TotalAmount);
+
+        -- Step 5: Use SCOPE_IDENTITY() to get the newly inserted OrderId
+        DECLARE @OrderId INT = SCOPE_IDENTITY();
+
+        -- Step 6: Insert the cart items from ShoppingCartDetails into the OrderItem table
+        INSERT INTO OrderItem (OrderId, ProductId, UnitPrice, Quantity)
+        SELECT @OrderId, SCD.ProductID, SCD.Price, SCD.Quantity
+        FROM ShoppingCartDetails SCD
+        INNER JOIN ShoppingCart SC ON SCD.CartID = SC.ID
+        WHERE SC.CustomerID = @CustomerId;
+
+        -- Step 7: Delete the items from the ShoppingCartDetails and ShoppingCart after placing the order
+        DELETE FROM ShoppingCartDetails
+        WHERE CartID IN (SELECT CartID FROM ShoppingCart WHERE CustomerID = @CustomerId);
+
+        DELETE FROM ShoppingCart
+        WHERE CustomerID = @CustomerId;
+
+        -- Step 8: Return the new order details
+        SELECT @OrderId AS OrderId, @OrderNumber AS OrderNumber, @TotalAmount AS TotalAmount;
+
+    END TRY
+    BEGIN CATCH
+        -- Handle errors (optional)
+        THROW;
+    END CATCH
+END;
+
+GO
+
+
+
+/*==============================================================*/
 /* Index: IndexOrderItemOrderId                                 */
 /*==============================================================*/
 CREATE INDEX IndexOrderItemOrderId ON OrderItem (
@@ -397,6 +783,34 @@ END
 GO
 
 /*==============================================================*/
+/* Stored procedure: GetProducts                                  */
+/*==============================================================*/
+
+--CHECKME
+
+/*==============================================================*/
+
+--Description: This is used to see a list of available products that are not discontinued this would be used in the customer view 
+--can be displayed in data grid view.
+
+
+CREATE PROCEDURE GetAvailableProducts 
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        Id AS ProductID,       -- Include ProductID
+        ProductName, 
+        UnitPrice AS Price
+    FROM Product
+    WHERE IsDiscontinued = 0;
+END;
+
+GO
+
+
+/*==============================================================*/
 /* Stored procedure: AddProduct                                  */
 /*==============================================================*/
 -- =============================================
@@ -468,6 +882,84 @@ BEGIN
     -- Insert statements for procedure here
 	DELETE FROM [GourmetShop].[dbo].[Product] WHERE Id = @ProductId;
 END
+GO
+
+/*==============================================================*/
+/* Stored procedure: Filter through products by supplier                           */
+/*==============================================================*/
+--ChECKME
+/*==============================================================*/
+--Description : filter through products by supplier name 
+--This would be used to allow the customer to filter through products by the supplier name.
+-- you could use a combo box and populate it with supplier name 
+--once a name is selected all the products and price sold by that supplier would show in a data grid view.
+
+CREATE PROCEDURE GetProductsBySupplierName   
+    @SupplierName NVARCHAR(40)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        p.Id AS ProductID,      -- Include ProductID
+        p.ProductName, 
+        p.UnitPrice AS Price
+    FROM Product p
+    JOIN Supplier s ON p.SupplierId = s.Id
+    WHERE s.CompanyName LIKE '%' + @SupplierName + '%'
+      AND p.IsDiscontinued = 0  -- Only include products that are not discontinued
+    ORDER BY p.ProductName;
+END;
+GO
+
+
+/*==============================================================*/
+/* Stored procedure: Filter through sales by product                        */
+/*==============================================================*/
+--ChECKME
+/*==============================================================*/
+--Description : This would be used if we wanted the admin to filter through sales by product.
+-- if we use a data grid view once a product row is selected sales infromation from this stored proc
+--would show either in labels or something else.
+
+CREATE PROCEDURE GetProductSales
+    @ProductID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TotalUnitsSold INT;
+    DECLARE @TotalSalesAmount DECIMAL(12, 2);
+
+    BEGIN TRY
+        -- Calculate total units sold and total sales amount for the product
+        SELECT 
+            @TotalUnitsSold = SUM(oi.Quantity),
+            @TotalSalesAmount = SUM(oi.Quantity * oi.UnitPrice)
+        FROM 
+            OrderItem oi
+        WHERE 
+            oi.ProductId = @ProductID;
+
+        -- If no sales exist for the product, set the values to 0
+        IF @TotalUnitsSold IS NULL
+        BEGIN
+            SET @TotalUnitsSold = 0;
+        END
+        IF @TotalSalesAmount IS NULL
+        BEGIN
+            SET @TotalSalesAmount = 0;
+        END
+
+        -- Return the results
+        SELECT 
+            @TotalUnitsSold AS TotalUnitsSold, 
+            @TotalSalesAmount AS TotalSalesAmount;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END;
 GO
 
 
