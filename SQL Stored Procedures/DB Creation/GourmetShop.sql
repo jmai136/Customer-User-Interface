@@ -23,6 +23,17 @@ CREATE TABLE [User] (
 go
 
 /*==============================================================*/
+/* TABLE: Roles                                             */
+/*==============================================================*/
+CREATE TABLE Roles (
+    RoleId INT PRIMARY KEY,       
+    RoleName NVARCHAR(50) UNIQUE  
+);
+
+go
+
+
+/*==============================================================*/
 /* Index: IndexCustomerName                                     */
 /*==============================================================*/
 CREATE INDEX IndexUserName ON [User] (
@@ -56,6 +67,32 @@ go
 /* TODO - Index: For faster querying with customer based on user                                */
 /*==============================================================*/
 
+/*==============================================================*/
+/* TABLE: ShoppingCart                                             */
+/*==============================================================*/
+
+CREATE TABLE ShoppingCart (
+    CartID INT IDENTITY(1,1) PRIMARY KEY,
+    CustomerID INT NOT NULL,  -- Foreign key reference to Customers table
+    CreatedDate DATETIME NOT NULL DEFAULT GETDATE(),
+    
+);
+go
+/*==============================================================*/
+/* TABLE: Shopping Cart Details                                          */
+/*==============================================================*/
+
+CREATE TABLE ShoppingCartDetails (
+    DetailID INT IDENTITY(1,1) PRIMARY KEY,
+    CartID INT NOT NULL,  -- Links to ShoppingCart
+    ProductID INT NOT NULL,  -- Links to Products
+    Quantity INT NOT NULL,
+    Price DECIMAL(12,2) NOT NULL,
+   -- TotalPrice AS (Quantity * UnitPrice) PERSISTED,
+
+);
+
+go
 
 /*==============================================================*/
 /* TABLE: Login                                           */
@@ -68,9 +105,7 @@ CREATE TABLE [dbo].[Login](
 )
 go
 
-/*==============================================================*/
-/* Stored procedure: GetProductById                                   */
-/*==============================================================*/
+
 -- =============================================
 -- Author:		Yareni Perez modified by Jude Mai
 -- Create date:  1/27/2025
@@ -79,61 +114,99 @@ go
 
 -- Notes: Currently we're passing the role to be the default, being 1, 1 is for customer, 2 is for admin
 -- =============================================
-CREATE PROCEDURE [dbo].[CreateUser]
-	@Role int = 1,
+
+
+/*==============================================================*/
+/* Stored procedure: CreateLogin                                */
+/*==============================================================*/
+
+--CHECKME  ( Checking to make sure this works with role id)
+GO
+CREATE PROCEDURE CreateLogin
+    @Role INT, -- 1 for Admin, 2 for Customer
     @FirstName NVARCHAR(50),
     @LastName NVARCHAR(50),
-	@City NVARCHAR(40) = NULL,
-	@Country NVARCHAR(40) = null,
-	@Phone NVARCHAR(20) =   null,
-
-    @Email NVARCHAR(100) = NULL, -- This is for specifically admin
-
+    @City NVARCHAR(50) = NULL,
+    @Country NVARCHAR(50) = NULL,
+    @Phone NVARCHAR(15) = NULL,
+    @Email NVARCHAR(100) = NULL, -- For Admin users only
     @Username NVARCHAR(50),
-    @PasswordHash NVARCHAR(255)
+    @Password NVARCHAR(255) -- Should already be hashed
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @UserId INT;
+    DECLARE @CustomerId INT;
+    DECLARE @AdminId INT;
 
     BEGIN TRY
-		IF EXISTS (
-			SELECT 1 FROM Login WHERE Username = @Username
-		)
-		BEGIN
-            RAISERROR('A user with this username already exists.', 16, 1); -- Message, severity, state
+        -- Step 1: Check if a user with this username already exists in the Login table
+        IF EXISTS (
+            SELECT 1 FROM Login WHERE Username = @Username
+        )
+        BEGIN
+            RAISERROR('A user with this username already exists.', 16, 1);
+            RETURN;
         END
 
-		-- Insert a new user into the User table
-		INSERT INTO [User] ([Role], FirstName, LastName, City, Country, Phone)
-			VALUES(@Role, @FirstName, @LastName, @City, @Country, @Phone);
+        -- Step 2: Check if the user already exists in the Users table based on Phone
+        SELECT @UserId = UserId
+        FROM Users
+        WHERE Phone = @Phone;
 
-		-- Retrieve the newly inserted AdminId
-        SET @UserId = SCOPE_IDENTITY();
+        IF @UserId IS NOT NULL
+        BEGIN
+            -- Existing User: Check role-specific tables for Admin or Customer
+            IF @Role = 2 -- Customer
+            BEGIN
+                SELECT @CustomerId = Id
+                FROM Customer
+                WHERE UserId = @UserId;
+            END
+            ELSE IF @Role = 1 -- Admin
+            BEGIN
+                SELECT @AdminId = AdminId
+                FROM Admin
+                WHERE UserId = @UserId;
+            END
+        END
+        ELSE
+        BEGIN
+            -- Step 3: New User - Insert into Users table
+            INSERT INTO Users (FirstName, LastName, City, Country, Phone, RoleId)
+            VALUES (@FirstName, @LastName, @City, @Country, @Phone, @Role);
 
-		-- Insert the new username and password, must already be hashed beforehand
-		INSERT INTO [Login] (UserId, Username, PasswordHash)
-		VALUES (@UserId, @Username, @PasswordHash);
+            SET @UserId = SCOPE_IDENTITY(); -- Get the newly generated UserId
+        END
 
-		-- Depending on the role the user is, insert into its respective table
-		-- FIXME: Depending on how many roles we have, fix this
-			IF @Role = 1
-				BEGIN
-					INSERT INTO Customer ([UserId])
-					VALUES (@UserId)
-				END
-			ELSE IF @Role = 2
-				BEGIN
-					INSERT INTO [Admin]([UserId], Email)
-						VALUES (@UserId, @Email)
-				END
+        -- Step 4: Handle role-specific entries
+        IF @Role = 2 AND @CustomerId IS NULL
+        BEGIN
+            -- Insert into Customer table if not already there
+            INSERT INTO Customer (UserId)
+            VALUES (@UserId);
 
-        -- Return the UserId to be used for logging in
+            SET @CustomerId = SCOPE_IDENTITY();
+        END
+        ELSE IF @Role = 1 AND @AdminId IS NULL
+        BEGIN
+            -- Insert into Admin table if not already there
+            INSERT INTO Admin (UserId, Email)
+            VALUES (@UserId, @Email);
+
+            SET @AdminId = SCOPE_IDENTITY();
+        END
+
+        -- Step 5: Insert login credentials into Login table
+        INSERT INTO Login (UserId, Username, PasswordHash)
+        VALUES (@UserId, @Username, @Password);
+
+        -- Optional: Return the newly added or updated UserId
         SELECT @UserId AS UserId;
     END TRY
     BEGIN CATCH
-        -- Handle errors
+        -- Error handling: Rethrow the error for debugging/logging purposes
         THROW;
     END CATCH
 END;
@@ -535,6 +608,22 @@ ALTER TABLE Product
    ADD CONSTRAINT FK_PRODUCT_REFERENCE_SUPPLIER foreign key (SupplierId)
       references Supplier (Id)
 GO
+
+ALTER TABLE ShoppingCartDetails
+   ADD CONSTRAINT FK_ShoppingCartDetails_Cart FOREIGN KEY (CartID) REFERENCES ShoppingCart(CartID) ON DELETE CASCADE
+GO
+
+ALTER TABLE ShoppingCartDetails
+    ADD CONSTRAINT FK_ShoppingCartDetails_Product FOREIGN KEY (ProductID) REFERENCES Product(ID)
+
+GO
+
+ALTER TABLE ShoppingCart
+ ADD CONSTRAINT FK_ShoppingCart_Customer FOREIGN KEY (CustomerID) REFERENCES Customer(ID) ON DELETE CASCADE
+
+ GO
+
+
 
 
 -- ***************************************************
@@ -3828,3 +3917,11 @@ INSERT INTO [OrderItem] ([Id],[OrderId],[ProductId],[UnitPrice],[Quantity])VALUE
 INSERT INTO [OrderItem] ([Id],[OrderId],[ProductId],[UnitPrice],[Quantity])VALUES(2154,830,75,7.75,4)
 INSERT INTO [OrderItem] ([Id],[OrderId],[ProductId],[UnitPrice],[Quantity])VALUES(2155,830,77,13.00,2)
 SET IDENTITY_INSERT [OrderItem] OFF
+
+--CHECKME--
+
+SET IDENTITY_INSERT [Roles] ON
+INSERT INTO Roles (RoleId, RoleName)
+VALUES (1, 'Customer'), (2, 'Admin');
+
+SET IDENTITY_INSERT [Roles] OFF
