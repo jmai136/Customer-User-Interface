@@ -61,7 +61,12 @@
   <ItemGroup>
     <Compile Include="Entities\Admin.cs" />
     <Compile Include="Entities\Customer.cs" />
+    <Compile Include="Entities\Login.cs" />
+    <Compile Include="Entities\Order.cs" />
+    <Compile Include="Entities\OrderItem.cs" />
     <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\ShoppingCart.cs" />
+    <Compile Include="Entities\ShoppingCartDetail.cs" />
     <Compile Include="Entities\Supplier.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
