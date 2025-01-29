@@ -26,7 +26,7 @@ go
 /* TABLE: Roles                                             */
 /*==============================================================*/
 CREATE TABLE Roles (
-    RoleId INT PRIMARY KEY,       
+    RoleId INT IDENTITY(1,1) PRIMARY KEY,       
     RoleName NVARCHAR(50) UNIQUE  
 );
 
@@ -166,7 +166,7 @@ BEGIN
             END
             ELSE IF @Role = 1 -- Admin
             BEGIN
-                SELECT @AdminId = AdminId
+                SELECT @AdminId = Id
                 FROM Admin
                 WHERE UserId = @UserId;
             END
@@ -3921,7 +3921,10 @@ SET IDENTITY_INSERT [OrderItem] OFF
 --CHECKME--
 
 SET IDENTITY_INSERT [Roles] ON
-INSERT INTO Roles (RoleId, RoleName)
-VALUES (1, 'Customer'), (2, 'Admin');
+--INSERT INTO Roles (RoleId, RoleName)
+--VALUES (1, 'Customer'), (2, 'Admin');
+INSERT INTO Roles (RoleName) VALUES 
+('Customer'),
+('Supplier');
 
 SET IDENTITY_INSERT [Roles] OFF
