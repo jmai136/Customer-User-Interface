@@ -42,6 +42,10 @@
             this.lblAdminPassword = new System.Windows.Forms.Label();
             this.txtAdminPassword = new System.Windows.Forms.TextBox();
             this.btnAdminLogin = new System.Windows.Forms.Button();
+            this.picCustPassword = new System.Windows.Forms.PictureBox();
+            this.picAdminPassword = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.picCustPassword)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picAdminPassword)).BeginInit();
             this.SuspendLayout();
             // 
             // lblCustUserName
@@ -76,6 +80,7 @@
             // 
             this.txtCustPassword.Location = new System.Drawing.Point(279, 130);
             this.txtCustPassword.Name = "txtCustPassword";
+            this.txtCustPassword.PasswordChar = '*';
             this.txtCustPassword.Size = new System.Drawing.Size(282, 22);
             this.txtCustPassword.TabIndex = 3;
             this.txtCustPassword.TextChanged += new System.EventHandler(this.txtCustPassword_TextChanged);
@@ -168,6 +173,7 @@
             // 
             this.txtAdminPassword.Location = new System.Drawing.Point(267, 405);
             this.txtAdminPassword.Name = "txtAdminPassword";
+            this.txtAdminPassword.PasswordChar = '*';
             this.txtAdminPassword.Size = new System.Drawing.Size(282, 22);
             this.txtAdminPassword.TabIndex = 12;
             this.txtAdminPassword.Visible = false;
@@ -185,11 +191,32 @@
             this.btnAdminLogin.UseVisualStyleBackColor = true;
             this.btnAdminLogin.Visible = false;
             // 
+            // picCustPassword
+            // 
+            this.picCustPassword.Location = new System.Drawing.Point(579, 130);
+            this.picCustPassword.Name = "picCustPassword";
+            this.picCustPassword.Size = new System.Drawing.Size(33, 29);
+            this.picCustPassword.TabIndex = 14;
+            this.picCustPassword.TabStop = false;
+            this.picCustPassword.Click += new System.EventHandler(this.picCustPassword_Click);
+            // 
+            // picAdminPassword
+            // 
+            this.picAdminPassword.Location = new System.Drawing.Point(579, 405);
+            this.picAdminPassword.Name = "picAdminPassword";
+            this.picAdminPassword.Size = new System.Drawing.Size(33, 29);
+            this.picAdminPassword.TabIndex = 15;
+            this.picAdminPassword.TabStop = false;
+            this.picAdminPassword.Visible = false;
+            this.picAdminPassword.Click += new System.EventHandler(this.picAdminPassword_Click);
+            // 
             // frmLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 494);
+            this.Controls.Add(this.picAdminPassword);
+            this.Controls.Add(this.picCustPassword);
             this.Controls.Add(this.btnAdminLogin);
             this.Controls.Add(this.txtAdminPassword);
             this.Controls.Add(this.lblAdminPassword);
@@ -206,6 +233,8 @@
             this.Controls.Add(this.lblCustUserName);
             this.Name = "frmLogin";
             this.Text = "Login";
+            ((System.ComponentModel.ISupportInitialize)(this.picCustPassword)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picAdminPassword)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -227,6 +256,8 @@
         private System.Windows.Forms.Label lblAdminPassword;
         private System.Windows.Forms.TextBox txtAdminPassword;
         private System.Windows.Forms.Button btnAdminLogin;
+        private System.Windows.Forms.PictureBox picCustPassword;
+        private System.Windows.Forms.PictureBox picAdminPassword;
     }
 }
 

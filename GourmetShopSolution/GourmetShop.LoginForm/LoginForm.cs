@@ -15,22 +15,21 @@ namespace GourmetShop.LoginForm
         public frmLogin()
         {
             InitializeComponent();
-        }
+            picCustPassword.Image = Properties.Resources.eyeClosed;//images from creative commons on google
 
-        //I'm throwing this together really quick so ya'll can get started.
-        //When I have more time, I am going to put these in array so that 
-        //both fields have to be filled in for the button to be enabled.
+        }
+       
         
-        //TODO: Change to an array so both fields have to be filled in to enable the login button
         private void txtCustUserName_TextChanged(object sender, EventArgs e)
         {
-            btnCustLogin.Enabled = true;
+            btnCustLogin.Enabled = !string.IsNullOrWhiteSpace(txtCustUserName.Text) &&
+                                   !string.IsNullOrWhiteSpace(txtCustPassword.Text);
         }
-        //TODO consider an event/handler or whatever it's called to put dots/starts when the password is typed.
-        //TODO see if there can be a show password option if it changes to dots when typed
+        
         private void txtCustPassword_TextChanged(object sender, EventArgs e)
         {
-            btnCustLogin.Enabled = true;
+            btnCustLogin.Enabled = !string.IsNullOrWhiteSpace(txtCustUserName.Text) &&
+                                    !string.IsNullOrWhiteSpace(txtCustPassword.Text);
         }
 
         private void btnNewCustomer_Click(object sender, EventArgs e)
@@ -46,20 +45,50 @@ namespace GourmetShop.LoginForm
             txtAdminPassword.Visible = chkAdmin.Checked;
             txtAdminUsername.Visible = chkAdmin.Checked;
             btnAdminLogin.Visible = chkAdmin.Checked;
-            
+            picAdminPassword.Visible = chkAdmin.Checked;
+            picAdminPassword.Image = Properties.Resources.eyeClosed;
+
         }
 
-        //TODO 
-        //Put these in an array so both have to be filled in for the button to be enabled
+        
         private void txtAdminUsername_TextChanged(object sender, EventArgs e)
         {
-            btnAdminLogin.Enabled = true;
+            btnAdminLogin.Enabled = btnCustLogin.Enabled = !string.IsNullOrWhiteSpace(txtAdminUsername.Text) &&
+                                   !string.IsNullOrWhiteSpace(txtAdminPassword.Text);
         }
-        //TODO consider an event/handler or whatever it's called to put dots/starts when the password is typed.
-        //TODO see if there can be a show password option if it changes to dots when typed
+        
         private void txtAdminPassword_TextChanged(object sender, EventArgs e)
         {
-            btnAdminLogin.Enabled=true;
+            btnAdminLogin.Enabled = !string.IsNullOrWhiteSpace(txtAdminUsername.Text) &&
+                                   !string.IsNullOrWhiteSpace(txtAdminPassword.Text);
+        }
+
+        private void picCustPassword_Click(object sender, EventArgs e)
+        {
+            if (txtCustPassword.PasswordChar == '*')
+            {
+                txtCustPassword.PasswordChar = '\0';
+                picCustPassword.Image = Properties.Resources.eyeOpen;
+            }
+            else
+            {
+                txtCustPassword.PasswordChar = '*';
+                picCustPassword.Image = Properties.Resources.eyeClosed;
+            }
+        }
+
+        private void picAdminPassword_Click(object sender, EventArgs e)
+        {
+            if (txtAdminPassword.PasswordChar == '*')
+            {
+                txtAdminPassword.PasswordChar = '\0';
+                picAdminPassword.Image = Properties.Resources.eyeOpen;
+            }
+            else
+            {
+                txtAdminPassword.PasswordChar = '*';
+                picAdminPassword.Image = Properties.Resources.eyeClosed;
+            }
         }
     }
 }
