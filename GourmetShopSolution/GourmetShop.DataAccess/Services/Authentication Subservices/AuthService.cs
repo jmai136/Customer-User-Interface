@@ -18,11 +18,6 @@ namespace GourmetShop.DataAccess.Services
             _authRepository = new AuthRepository(connectionString);
         }
 
-        public string GetPassword(string username)
-        {
-            return _authRepository.GetPassword(username);
-        }
-
         // CHECKME: Do we need a separate email parameter? Because in the form you have username/email as a field, how does the email validator work?
         public int Register(User user, Authentication authentication)
         {
@@ -33,7 +28,7 @@ namespace GourmetShop.DataAccess.Services
 
         public int Login(string username, string password)
         {
-            if (!PasswordHasher.VerifyPassword(password, GetPassword(username)))
+            if (!PasswordHasher.VerifyPassword(password, _authRepository.GetPassword(username)))
                 return -1;
                 
             return _authRepository.GetUserId(username);

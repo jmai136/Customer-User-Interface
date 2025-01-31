@@ -82,7 +82,7 @@ namespace GourmetShop.DataAccess.Repositories
 
                         while (reader.Read())
                         {
-                            password = reader.GetOrdinal("Password").ToString();
+                            password = reader["Password"].ToString();
                         }
 
                         return password;

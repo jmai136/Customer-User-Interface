@@ -591,16 +591,18 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	IF NOT EXISTS (
-		SELECT 1 FROM Authentication WHERE Username = @Username
+		SELECT [Password]
+		FROM Authentication 
+		WHERE Username = @Username
 	)
 	BEGIN
 		RAISERROR('Username does not exist.', 16, 1);
 		RETURN;
 		END
 
-	SELECT [Password]
-		FROM Authentication 
-		WHERE Username = @Username;
+    SELECT [Password]
+    FROM Authentication
+    WHERE Username = @Username;
 END;
 GO
 
