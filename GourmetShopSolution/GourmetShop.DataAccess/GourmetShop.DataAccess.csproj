@@ -70,12 +70,16 @@
     <Compile Include="Entities\Supplier.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Classes\AuthRepository.cs" />
     <Compile Include="Repositories\Classes\GourmetShopRepository.cs" />
     <Compile Include="Repositories\Classes\ProductRepository.cs" />
     <Compile Include="Repositories\Classes\SupplierRepository.cs" />
+    <Compile Include="Repositories\Interfaces\Authentication Subinterfaces\IAuthRepository.cs" />
     <Compile Include="Repositories\Interfaces\CRUD Subinterfaces\IProductRepository_CRUD.cs" />
     <Compile Include="Repositories\Interfaces\CRUD Subinterfaces\ISupplierRepository_CRUD.cs" />
     <Compile Include="Repositories\Interfaces\IGourmetShopRepository.cs" />
+    <Compile Include="Services\Authentication Subservices\AuthService.cs" />
+    <Compile Include="Services\Authentication Subservices\PasswordHasher.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
