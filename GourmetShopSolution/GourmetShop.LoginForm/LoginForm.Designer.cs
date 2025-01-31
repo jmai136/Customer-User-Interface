@@ -44,6 +44,7 @@
             this.btnAdminLogin = new System.Windows.Forms.Button();
             this.picCustPassword = new System.Windows.Forms.PictureBox();
             this.picAdminPassword = new System.Windows.Forms.PictureBox();
+            this.btnExit = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picCustPassword)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picAdminPassword)).BeginInit();
             this.SuspendLayout();
@@ -95,6 +96,7 @@
             this.btnCustLogin.TabIndex = 4;
             this.btnCustLogin.Text = "Login";
             this.btnCustLogin.UseVisualStyleBackColor = true;
+            this.btnCustLogin.Click += new System.EventHandler(this.btnCustLogin_Click);
             // 
             // lblReturningCustomers
             // 
@@ -190,6 +192,7 @@
             this.btnAdminLogin.Text = "Login";
             this.btnAdminLogin.UseVisualStyleBackColor = true;
             this.btnAdminLogin.Visible = false;
+            this.btnAdminLogin.Click += new System.EventHandler(this.btnAdminLogin_Click);
             // 
             // picCustPassword
             // 
@@ -210,11 +213,22 @@
             this.picAdminPassword.Visible = false;
             this.picAdminPassword.Click += new System.EventHandler(this.picAdminPassword_Click);
             // 
+            // btnExit
+            // 
+            this.btnExit.Location = new System.Drawing.Point(691, 458);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(75, 23);
+            this.btnExit.TabIndex = 16;
+            this.btnExit.Text = "Exit";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
             // frmLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 494);
+            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.picAdminPassword);
             this.Controls.Add(this.picCustPassword);
             this.Controls.Add(this.btnAdminLogin);
@@ -233,6 +247,7 @@
             this.Controls.Add(this.lblCustUserName);
             this.Name = "frmLogin";
             this.Text = "Login";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmLogin_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.picCustPassword)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picAdminPassword)).EndInit();
             this.ResumeLayout(false);
@@ -258,6 +273,7 @@
         private System.Windows.Forms.Button btnAdminLogin;
         private System.Windows.Forms.PictureBox picCustPassword;
         private System.Windows.Forms.PictureBox picAdminPassword;
+        private System.Windows.Forms.Button btnExit;
     }
 }
 

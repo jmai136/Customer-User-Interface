@@ -12,9 +12,25 @@ namespace GourmetShop.LoginForm
 {
     public partial class frmNewCustomer : Form
     {
+        private TextBox[] newCustTextBoxes;
         public frmNewCustomer()
         {
             InitializeComponent();
+
+            newCustTextBoxes = new TextBox[]
+                {txtNewCustUserName, txtNewCustPassword, txtNewCustConfirmPassword, txtNewCustFirstName,
+                txtNewCustLastName, txtNewCustCity, txtNewCustCountry, txtNewCustPhone };
+
+            //subscribing to all the textBoxes at once
+            //using the => so I don't have to write a seperate function
+            foreach(TextBox box in newCustTextBoxes)
+            {
+                box.TextChanged += (s, e) => ValidateForm();
+            }
+
+            btnNewCustCreateAccount.Enabled = true;
+            lblinvalidEmail.Visible = false;
+            lblPassMisMatch.Visible = false;
         }
 
         private void picNewCustPassword_Click(object sender, EventArgs e)
@@ -33,7 +49,44 @@ namespace GourmetShop.LoginForm
 
         private void picNewCustConfirmPassword_Click(object sender, EventArgs e)
         {
+            if (txtNewCustConfirmPassword.PasswordChar == '*')
+            {
+                txtNewCustConfirmPassword.PasswordChar = '\0';
+                picNewCustConfirmPassword.Image = Properties.Resources.eyeOpen;
+            }
+            else
+            {
+                txtNewCustConfirmPassword.PasswordChar = '*';
+                picNewCustConfirmPassword.Image = Properties.Resources.eyeClosed;
+            }
+        }
 
+        private void ValidateForm()
+        {
+            bool allFilled = newCustTextBoxes.All
+                    (box => !string.IsNullOrWhiteSpace(box.Text));
+
+            bool isEmailValid = EmailValidator.IsValidEmail(txtNewCustUserName.Text);
+
+            bool passwordMatch = txtNewCustPassword.Text == txtNewCustConfirmPassword.Text;
+
+            lblinvalidEmail.Visible = !isEmailValid;
+            lblPassMisMatch.Visible= !passwordMatch;
+
+            btnNewCustCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch;
+        }
+
+        private void btnReturn_Click(object sender, EventArgs e)
+        {
+            frmLogin frmLogin = new frmLogin();
+            frmLogin.Show();
+            this.Close();
+        }
+
+        //TODO Actually put in logic to verify account was created and then have the label show up.
+        private void btnNewCustCreateAccount_Click(object sender, EventArgs e)
+        {
+            lblAccountCreated.Visible = true;
         }
     }
 }

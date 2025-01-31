@@ -83,6 +83,16 @@ namespace GourmetShop.LoginForm.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap eyeClosed2 {
+            get {
+                object obj = ResourceManager.GetObject("eyeClosed2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap eyeOpen {
             get {
                 object obj = ResourceManager.GetObject("eyeOpen", resourceCulture);
@@ -96,6 +106,16 @@ namespace GourmetShop.LoginForm.Properties {
         internal static System.Drawing.Bitmap eyeOpen1 {
             get {
                 object obj = ResourceManager.GetObject("eyeOpen1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap eyeOpen2 {
+            get {
+                object obj = ResourceManager.GetObject("eyeOpen2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

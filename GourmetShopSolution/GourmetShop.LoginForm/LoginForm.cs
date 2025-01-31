@@ -36,6 +36,7 @@ namespace GourmetShop.LoginForm
         {
             frmNewCustomer newCustomer = new frmNewCustomer();
             newCustomer.Show();
+            this.Hide();
         }
 
         private void chkAdmin_CheckedChanged(object sender, EventArgs e)
@@ -89,6 +90,30 @@ namespace GourmetShop.LoginForm
                 txtAdminPassword.PasswordChar = '*';
                 picAdminPassword.Image = Properties.Resources.eyeClosed;
             }
+        }
+        //TODO use this button to actually log in a customer in and take them to the customer view
+        private void btnCustLogin_Click(object sender, EventArgs e)
+        {
+
+            //this.Close() or this.Hide();
+            //TODO enable the above when the button is hooked up.
+        }
+        //TODO use this button to actually log in an admin and take them to the admin view
+        private void btnAdminLogin_Click(object sender, EventArgs e)
+        {
+
+            //this.Close() or this.Hide();
+            //TODO enable the above when the button is hooked up.
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void frmLogin_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
