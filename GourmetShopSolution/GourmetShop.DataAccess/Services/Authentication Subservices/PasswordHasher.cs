@@ -9,16 +9,8 @@ namespace GourmetShop.DataAccess.Services
 {
     public static class PasswordHasher
     {
-        public static string HashPassword(string password, int iterations = 4)
+        private static string PBKDF2_Password(string password, byte[] salt, int iterations = 4)
         {
-            byte[] salt;
-
-            using (var rnrg = new RNGCryptoServiceProvider())
-            {
-                rnrg.GetBytes(salt = new byte[16]);
-            }
-
-            // CHECKME: Make sure this actually works, we're using iterations, which might cause issues
             using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256))
             {
                 byte[] hash = pbkdf2.GetBytes(32);
@@ -32,10 +24,36 @@ namespace GourmetShop.DataAccess.Services
                 return Encoding.Unicode.GetString(Encoding.Unicode.GetBytes(base64));
             }
         }
+        public static string HashPassword(string password, int iterations = 4)
+        {
+            byte[] salt;
 
+            using (var rnrg = new RNGCryptoServiceProvider())
+            {
+                rnrg.GetBytes(salt = new byte[16]);
+            }
+
+            return PBKDF2_Password(password, salt, iterations);
+        }
+
+        public static string HashPassword(string password, byte[] salt, int iterations = 4)
+        {
+            return PBKDF2_Password(password, salt, iterations);
+        }
+
+        private static byte[] GetSalt(string hashedPassword)
+        {
+            byte[] hashBytes = Convert.FromBase64String(Encoding.Unicode.GetString(Encoding.Unicode.GetBytes(hashedPassword)));
+            byte[] salt = new byte[16];
+            Array.Copy(hashBytes, 0, salt, 0, 16);
+
+            return salt;
+        }
+
+        // FIXME: Hashing differently each time due to generating a new salt each time
         public static bool VerifyPassword(string inputPassword, string hashedPassword)
-        {             
-            return HashPassword(inputPassword) == hashedPassword;
+        {
+            return HashPassword(inputPassword, GetSalt(hashedPassword)).Equals(hashedPassword);
         }
     }
 }
