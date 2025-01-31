@@ -93,7 +93,7 @@ namespace GourmetShop.LoginForm
         {
             frmLogin login = new frmLogin();
             login.Show();
-            this.Close();
+            this.Hide();
         }
     }
 }
