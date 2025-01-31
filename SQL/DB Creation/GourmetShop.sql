@@ -433,13 +433,13 @@ GO
 
 
 /*==============================================================*/
-/* TABLE: Login                                           */
+/* TABLE: Authentication                                           */
 /*==============================================================*/
-CREATE TABLE [dbo].[Login](
+CREATE TABLE [dbo].[Authentication](
 	[Id] [int] IDENTITY NOT NULL,
 	[UserId] [int] NOT NULL,
-	[Username] [nvarchar](50) NOT NULL,
-	[Password] [nvarchar](255) NOT NULL,
+	[Username] [nvarchar](320) NOT NULL,
+	[Password] [nvarchar](255) NOT NULL
 )
 go
 
@@ -474,11 +474,9 @@ CREATE PROCEDURE Register
     @City NVARCHAR(50) = NULL,
     @Country NVARCHAR(50) = NULL,
     @Phone NVARCHAR(15) = NULL,
-    
-	@Email NVARCHAR(100) = NULL, -- For Admin users only
 
-    @Username NVARCHAR(50),
-    @Password NVARCHAR(255) -- Should already be hashed
+    @Username NVARCHAR(320),
+    @Password NVARCHAR(255) -- Should already be hashed and salted
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -565,8 +563,9 @@ BEGIN
 
 					BEGIN
 						-- Insert into Admin table if not already there
+						-- FIXED: In the login form, the username and email field are one
 						INSERT INTO Admin (UserId, Email)
-						VALUES (@UserId, @Email);
+						VALUES (@UserId, @Username);
 					END
 			END
 		END
@@ -578,6 +577,55 @@ BEGIN
         -- Error handling: Rethrow the error for debugging/logging purposes
         THROW;
     END CATCH
+END;
+GO
+
+/*==============================================================*/
+/* Stored procedure: GetPassword                               */
+
+-- Perform the comparison in the application logic so it's more secure
+/*==============================================================*/
+CREATE PROCEDURE GetPassword
+    @Username NVARCHAR(320)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	IF NOT EXISTS (
+		SELECT 1 FROM Authentication WHERE Username = @Username
+	)
+	BEGIN
+		RAISERROR('Username does not exist.', 16, 1);
+		RETURN;
+		END
+
+	SELECT [Password]
+		FROM Authentication 
+		WHERE Username = @Username;
+END;
+GO
+
+/*==============================================================*/
+/* Stored procedure: GetUserIdLogin                               */
+
+-- After verifying the password via the application logic side, just retrieve the User ID here, this is the equivalent of logging in
+/*==============================================================*/
+CREATE PROCEDURE GetUserIdLogin
+    @Username NVARCHAR(320)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	IF NOT EXISTS (
+		SELECT 1 FROM Authentication WHERE Username = @Username
+	)
+	BEGIN
+		RAISERROR('Username does not exist.', 16, 1);
+		RETURN;
+		END
+
+	SELECT [UserId] 
+		FROM Authentication 
+		WHERE Username = @Username
+
 END;
 GO
 
@@ -1134,8 +1182,8 @@ ALTER TABLE "Customer"
 		references [User](Id)
 GO
 
-ALTER TABLE "Login"
-	ADD CONSTRAINT FK_LOGIN_REFERENCE_USER FOREIGN KEY (UserId) 
+ALTER TABLE "Authentication"
+	ADD CONSTRAINT FK_AUTH_REFERENCE_USER FOREIGN KEY (UserId) 
 		references [User](Id)
 GO
 

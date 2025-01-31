@@ -6,8 +6,8 @@ namespace GourmetShop.DataAccess.Entities
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("Login")]
-    public partial class Login
+    [Table("Authentication")]
+    public partial class Authentication
     {
         [Key]
         [Column(Order = 0)]
@@ -20,7 +20,7 @@ namespace GourmetShop.DataAccess.Entities
 
         [Key]
         [Column(Order = 2)]
-        [StringLength(50)]
+        [StringLength(320)]
         public string Username { get; set; }
 
         [Key]

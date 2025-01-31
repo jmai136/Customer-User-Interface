@@ -16,6 +16,6 @@ namespace GourmetShop.DataAccess.Entities
         [StringLength(320)]
         public string Email { get; set; }
 
-        public virtual User User { get; set; }
+        // public virtual User User { get; set; }
     }
 }
