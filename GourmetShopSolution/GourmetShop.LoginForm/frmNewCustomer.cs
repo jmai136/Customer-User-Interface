@@ -16,5 +16,24 @@ namespace GourmetShop.LoginForm
         {
             InitializeComponent();
         }
+
+        private void picNewCustPassword_Click(object sender, EventArgs e)
+        {
+            if (txtNewCustPassword.PasswordChar == '*')
+            {
+                txtNewCustPassword.PasswordChar = '\0';
+                picNewCustPassword.Image = Properties.Resources.eyeOpen;
+            }
+            else
+            {
+                txtNewCustPassword.PasswordChar = '*';
+                picNewCustPassword.Image = Properties.Resources.eyeClosed;
+            }
+        }
+
+        private void picNewCustConfirmPassword_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

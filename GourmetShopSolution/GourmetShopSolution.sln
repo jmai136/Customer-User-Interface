@@ -5,7 +5,7 @@ VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GourmetShop.DataAccess", "GourmetShop.DataAccess\GourmetShop.DataAccess.csproj", "{65F95D70-55C4-44B7-A223-95279CBB0459}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GourmetShop.WinForms", "GourmetShop.WinForms\GourmetShop.WinForms.csproj", "{17CEF270-99A5-4904-B36F-BD3B674703D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GourmetShop.AdminForm", "GourmetShop.WinForms\GourmetShop.AdminForm.csproj", "{17CEF270-99A5-4904-B36F-BD3B674703D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GourmetShop.DataAccessTests", "GourmetShop.DataAccessTests\GourmetShop.DataAccessTests.csproj", "{B0DB89F6-19E2-4533-8775-CA1CD23F63F0}"
 EndProject
