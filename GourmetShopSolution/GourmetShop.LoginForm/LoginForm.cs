@@ -1,6 +1,10 @@
-﻿using System;
+﻿using GourmetShop.DataAccess.Entities;
+using GourmetShop.DataAccess.Services;
+using GourmetShop.LoginForm.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -12,6 +16,8 @@ namespace GourmetShop.LoginForm
 {
     public partial class frmLogin : Form
     {
+        AuthService _authService = new AuthService(LoginFormUtils._connectionString);
+
         public frmLogin()
         {
             InitializeComponent();
@@ -89,6 +95,19 @@ namespace GourmetShop.LoginForm
                 txtAdminPassword.PasswordChar = '*';
                 picAdminPassword.Image = Properties.Resources.eyeClosed;
             }
+        }
+
+        private void btnCustLogin_Click(object sender, EventArgs e)
+        {
+            Authentication authentication = new Authentication()
+            {
+                Username = txtCustUserName.Text,
+                Password = txtCustPassword.Text
+            };
+
+            // TODO: Implement login functionality
+            if (_authService.Login(authentication.Username, authentication.Password) != -1)
+                MessageBox.Show("Login Successful");
         }
     }
 }
