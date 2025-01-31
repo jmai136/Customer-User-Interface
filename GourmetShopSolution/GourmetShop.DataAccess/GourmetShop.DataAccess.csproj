@@ -65,6 +65,7 @@
     <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\OrderItem.cs" />
     <Compile Include="Entities\Product.cs" />
+    <Compile Include="Entities\SessionData.cs" />
     <Compile Include="Entities\ShoppingCart.cs" />
     <Compile Include="Entities\ShoppingCartDetail.cs" />
     <Compile Include="Entities\Supplier.cs" />
@@ -73,9 +74,11 @@
     <Compile Include="Repositories\Classes\AuthRepository.cs" />
     <Compile Include="Repositories\Classes\GourmetShopRepository.cs" />
     <Compile Include="Repositories\Classes\ProductRepository.cs" />
+    <Compile Include="Repositories\Classes\ShoppingCartRepository.cs" />
     <Compile Include="Repositories\Classes\SupplierRepository.cs" />
     <Compile Include="Repositories\Interfaces\Authentication Subinterfaces\IAuthRepository.cs" />
     <Compile Include="Repositories\Interfaces\CRUD Subinterfaces\IProductRepository_CRUD.cs" />
+    <Compile Include="Repositories\Interfaces\CRUD Subinterfaces\IShoppingCartRepository.cs" />
     <Compile Include="Repositories\Interfaces\CRUD Subinterfaces\ISupplierRepository_CRUD.cs" />
     <Compile Include="Repositories\Interfaces\IGourmetShopRepository.cs" />
     <Compile Include="Services\Authentication Subservices\AuthService.cs" />
