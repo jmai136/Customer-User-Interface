@@ -88,5 +88,12 @@ namespace GourmetShop.LoginForm
         {
             lblAccountCreated.Visible = true;
         }
+
+        private void frmNewCustomer_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            frmLogin login = new frmLogin();
+            login.Show();
+            this.Close();
+        }
     }
 }

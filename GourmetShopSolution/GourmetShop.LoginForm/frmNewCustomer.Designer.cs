@@ -304,6 +304,7 @@
             this.Controls.Add(this.lblNewCustUserName);
             this.Name = "frmNewCustomer";
             this.Text = "New Customer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmNewCustomer_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.picNewCustConfirmPassword)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picNewCustPassword)).EndInit();
             this.ResumeLayout(false);
