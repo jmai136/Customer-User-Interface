@@ -468,7 +468,7 @@ go
 /*==============================================================*/
 GO
 CREATE PROCEDURE Register
-    @RoleId INT, -- 1 for Customer, 2 for Login
+    @RoleId INT, -- 1 for Customer, 2 for Authentication
     @FirstName NVARCHAR(50),
     @LastName NVARCHAR(50),
     @City NVARCHAR(50) = NULL,
@@ -486,7 +486,7 @@ BEGIN
     BEGIN TRY
         -- Existing user with login check to make sure you don't make the same account twice
         IF EXISTS (
-            SELECT 1 FROM Login WHERE Username = @Username
+            SELECT 1 FROM Authentication WHERE Username = @Username
         )
         BEGIN
             RAISERROR('A user with this username already exists.', 16, 1);
@@ -523,15 +523,15 @@ BEGIN
 		-- Guard clause to check whether user already exists, this should be fine because on the UI side, one must choose the role of the user
 		-- This setup is to mitigate issues with already existing no-login-account users
 		 IF EXISTS (
-            SELECT 1 FROM Login WHERE UserId = @UserId
+            SELECT 1 FROM Authentication WHERE UserId = @UserId
         )
         BEGIN
             RAISERROR('A login with this user already exists.', 16, 1);
 			RETURN;
         END
 
-        -- Insert login credentials into Login table
-        INSERT INTO Login (UserId, Username, Password)
+        -- Insert login credentials into Authentication table
+        INSERT INTO Authentication (UserId, Username, Password)
         VALUES (@UserId, @Username, @Password);
 
 		BEGIN
