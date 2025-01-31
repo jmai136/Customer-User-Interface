@@ -11,6 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GourmetShop.DataAccessTests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GourmetShop.LoginForm", "GourmetShop.LoginForm\GourmetShop.LoginForm.csproj", "{E12C00B6-8B42-46D0-98B9-D52ED886A8B8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{44887A9A-A98D-4C74-8E57-29C46FD93A7C}"
+	ProjectSection(SolutionItems) = preProject
+		Config\ConnectionStrings.config = Config\ConnectionStrings.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
