@@ -12,7 +12,7 @@ namespace GourmetShop.DataAccess.Repositories
     // The interfaces for them implement CRUD on their own but still inherit from IGourmetShopRepository in case there are other functions that needs to be implemented but are shareable
 
     // Interfaces extending other interfaces have been used
-    internal interface IGourmetShopRepository<T>
+    public interface IGourmetShopRepository<T>
     {
     }
 }
