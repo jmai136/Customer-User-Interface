@@ -24,9 +24,18 @@ namespace GourmetShop.CustomerView
         public frmShoppingCart()
         {
             InitializeComponent();
+            LoadShoppingCart();
 
-            
-            
+            // Set all columns as read-only first
+            foreach (DataGridViewColumn col in dgvShoppingCartView.Columns)
+            {
+                col.ReadOnly = true;
+            }
+
+            // Allow only the "Quantity" column to be editable
+            dgvShoppingCartView.Columns["Quantity"].ReadOnly = false;
+
+
 
 
         }
@@ -118,16 +127,7 @@ namespace GourmetShop.CustomerView
         }
         private void frmShoppingCart_Load(object sender, EventArgs e)
         {
-            LoadShoppingCart();
-
-            // Set all columns as read-only first
-            foreach (DataGridViewColumn col in dgvShoppingCartView.Columns)
-            {
-                col.ReadOnly = true;
-            }
-
-            // Allow only the "Quantity" column to be editable
-            dgvShoppingCartView.Columns["Quantity"].ReadOnly = false;
+            
         }
 
 

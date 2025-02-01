@@ -173,5 +173,34 @@ namespace GourmetShop.DataAccess.Repositories
                 throw;
             }
         }
+
+        //CHECKME ADDED
+
+        public List<Product> GetAvailableProductsForAdmin()
+        {
+            List<Product> products = new List<Product>();
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            using (SqlCommand cmd = new SqlCommand("GetAvailableProducts", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        products.Add(new Product
+                        {
+                            Id = Convert.ToInt32(reader["ProductID"]),
+                            ProductName = reader["ProductName"].ToString(),
+                            UnitPrice = Convert.ToDecimal(reader["Price"])
+                        });
+                    }
+                }
+            }
+            return products;
+        }
+
     }
 }
