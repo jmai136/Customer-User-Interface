@@ -15,7 +15,7 @@ namespace GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces
         void RemoveFromCart(int cartId, int productId);
         void ClearCart(int cartId);
         
-        int PlaceOrder(int customerId);
+        void PlaceOrder(int customerId);
 
         DataTable ViewCart(int cartId);
 
