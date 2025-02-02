@@ -1,5 +1,7 @@
 ﻿using GourmetShop.CustomerView;
 using GourmetShop.DataAccess.Entities;
+using GourmetShop.DataAccess.Repositories;
+using GourmetShop.DataAccess.Repositories.Classes;
 using GourmetShop.DataAccess.Services;
 using GourmetShop.LoginForm.Utils;
 using GourmetShop.WinForms;
@@ -13,12 +15,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace GourmetShop.LoginForm
 {
     public partial class frmLogin : Form
     {
+        public static string connectionString = ConfigurationManager.ConnectionStrings["GourmetShopConnectionString"].ConnectionString;
         AuthService _authService = new AuthService(LoginFormUtils._connectionString);
+        private CustomerRepository customerRepository = new CustomerRepository(connectionString);
 
         public frmLogin()
         {
@@ -124,7 +129,9 @@ namespace GourmetShop.LoginForm
                 MessageBox.Show("Login Failed");
                 return;
             }
-
+            
+           Customer customer = customerRepository.GetByUserId(userId);
+            SessionData.CurrentCustomerId = customer.Id;
             frmCustomerMain customerMain = new frmCustomerMain(userId);
             customerMain.Show();
 
@@ -143,6 +150,7 @@ namespace GourmetShop.LoginForm
             };
 
             int userId = _authService.Login(authentication.Username, authentication.Password);
+            
 
             if (userId == -1)
             {

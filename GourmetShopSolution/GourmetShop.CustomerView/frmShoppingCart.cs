@@ -32,7 +32,7 @@ namespace GourmetShop.CustomerView
 
             // Allow only the "Quantity" column to be editable
             // FIXME: System.NullReferenceException: 'Object reference not set to an instance of an object.'
-            dgvShoppingCartView.Columns["Quantity"].ReadOnly = false;
+           // dgvShoppingCartView.Columns["Quantity"].ReadOnly = false;
 
 
 

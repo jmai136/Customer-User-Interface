@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using GourmetShop.DataAccess.Entities;
 using GourmetShop.DataAccess.Repositories;
 using GourmetShop.DataAccess.Repositories.Classes;
+using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 
 namespace GourmetShop.CustomerView
 {
@@ -22,6 +23,7 @@ namespace GourmetShop.CustomerView
         private ProductRepository productRepository = new ProductRepository(connectionString);
         private SupplierRepository supplierRepository = new SupplierRepository(connectionString);
         private CustomerRepository _customerRepository = new CustomerRepository(connectionString);
+        private ShoppingCartRepository _shoppingcartRepository = new ShoppingCartRepository(connectionString);
 
         Customer customer = new Customer();
         public frmCustomerMain()
@@ -150,53 +152,58 @@ namespace GourmetShop.CustomerView
         }
         //TODO
         //Someone smarter than me double check this!!!!
-        private void AddToCart(int customerId, int productId, int quantity)
-        {
-            //_ = SessionData.CurrentCustomerId;
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                using (SqlCommand cmd = new SqlCommand("AddToCart", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@CustomerID", customerId);
-                    cmd.Parameters.AddWithValue("@ProductID", productId);
-                    cmd.Parameters.AddWithValue("@Quantity", quantity);
+        //private void AddToCart(int customerId, int productId, int quantity)
+        //{
+        //    //_ = SessionData.CurrentCustomerId;
+        //    try
+        //    {
+        //        using (SqlConnection conn = new SqlConnection(connectionString))
+        //        using (SqlCommand cmd = new SqlCommand("AddToCart", conn))
+        //        {
+        //            cmd.CommandType = CommandType.StoredProcedure;
+        //            cmd.Parameters.AddWithValue("@CustomerID", customerId);
+        //            cmd.Parameters.AddWithValue("@ProductID", productId);
+        //            cmd.Parameters.AddWithValue("@Quantity", quantity);
                     
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
+        //            conn.Open();
+        //            cmd.ExecuteNonQuery();
+        //        }
 
-            }catch(Exception ex){
-                lblAddToCart.Text = "Failed to add to cart because: " + ex.Message;
-            }
-        }
+        //    }catch(Exception ex){
+        //        lblAddToCart.Text = "Failed to add to cart because: " + ex.Message;
+        //    }
+        //}
 
         private void btnAddToCart_Click(object sender, EventArgs e)
         {
-            if(dgvCustViewProducts.SelectedRows.Count == 0)
+            if (dgvCustViewProducts.SelectedRows.Count == 0)
             {
-                lblAddToCart.Text = "Select a product to add to cart";
+                MessageBox.Show("Please select a product.", "Selection Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if(SessionData.CurrentCustomerId <= 0)
+            // Debugging: Check if the Customer ID is valid
+            MessageBox.Show($"Current Customer ID: {SessionData.CurrentCustomerId}");
+
+            if (SessionData.CurrentCustomerId <= 0)
             {
-                lblAddToCart.Text = "Your session has expired. You will need to log in";
+                MessageBox.Show("Invalid Customer ID. Please log in again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            int productId = Convert.ToInt32(dgvCustViewProducts.SelectedRows[0].Cells["Id"].Value);
             int customerId = SessionData.CurrentCustomerId;
-            int quantiy = (int)nudQuantity.Value;
+            int productId = Convert.ToInt32(dgvCustViewProducts.SelectedRows[0].Cells["Id"].Value);
+            int quantity = (int)nudQuantity.Value;
 
-            if(nudQuantity.Value < 1)
+            try
             {
-                lblAddToCart.Text = "Select a quantity";
-                return;
+                _shoppingcartRepository.AddToCart(customerId, productId, quantity);
+                MessageBox.Show("Added to cart!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            AddToCart(customerId, productId, quantiy);
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Database error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
