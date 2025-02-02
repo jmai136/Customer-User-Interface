@@ -1,4 +1,5 @@
-﻿using GourmetShop.DataAccess.Entities;
+﻿using GourmetShop.CustomerView;
+using GourmetShop.DataAccess.Entities;
 using GourmetShop.DataAccess.Services;
 using GourmetShop.LoginForm.Utils;
 using GourmetShop.WinForms;
@@ -118,11 +119,18 @@ namespace GourmetShop.LoginForm
             // TODO: Implement login functionality, so grab the customer ID from the database based on the user ID
             int userId = _authService.Login(authentication.Username, authentication.Password);
 
-            if (userId != -1)
-                MessageBox.Show("Login Successful");
+            if (userId == -1)
+            {
+                MessageBox.Show("Login Failed");
+                return;
+            }
 
-            // FIXME:  Should be able to close the login form after the customer logs in
-            this.Hide();.
+            frmCustomerMain customerMain = new frmCustomerMain(userId);
+            customerMain.Show();
+
+            // FIXME: Need to be able to clsoe the login form otherwise process will keep running in background even when you're done with the app
+            // Probably going to have to close this form, assign a handler to the FormClosing, open the other forms from there, then actually implement application exit when they're done
+            this.Hide();
         }
 
         //TODO use this button to actually log in an admin and take them to the admin view
@@ -145,7 +153,8 @@ namespace GourmetShop.LoginForm
             frmAdminMain adminMain = new frmAdminMain(userId);
             adminMain.Show();
 
-            // FIXME:  Should be able to close the login form after the admin logs in
+            // FIXME: Need to be able to clsoe the login form otherwise process will keep running in background even when you're done with the app
+            // Probably going to have to close this form, assign a handler to the FormClosing, open the other forms from there, then actually implement application exit when they're done
             this.Hide();
         }
 
@@ -158,7 +167,5 @@ namespace GourmetShop.LoginForm
         {
             Application.Exit();
         }
-
-        
     }
 }

@@ -11,14 +11,19 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using GourmetShop.DataAccess.Entities;
 using GourmetShop.DataAccess.Repositories;
+using GourmetShop.DataAccess.Repositories.Classes;
 
 namespace GourmetShop.CustomerView
 {
     public partial class frmCustomerMain : Form
     {
         public static string connectionString = ConfigurationManager.ConnectionStrings["GourmetShopConnectionString"].ConnectionString;
+
         private ProductRepository productRepository = new ProductRepository(connectionString);
         private SupplierRepository supplierRepository = new SupplierRepository(connectionString);
+        private CustomerRepository _customerRepository = new CustomerRepository(connectionString);
+
+        Customer customer = new Customer();
         public frmCustomerMain()
         {
             InitializeComponent();
@@ -26,6 +31,14 @@ namespace GourmetShop.CustomerView
             dgvCustViewProducts.DataBindingComplete += dgvCustViewProducts_DataBindingComplete;
             SupplierList();
             cboCustSuppliers.SelectedIndex = 0;
+        }
+
+        public frmCustomerMain(int userId) : this()
+        {
+            // TODO: Use the customer's ID to fetch the customer's data which you can then do stuff with it
+            customer = _customerRepository.GetByUserId(userId);
+
+            MessageBox.Show($"Welcome, {customer.Id}!");
         }
 
 
@@ -71,6 +84,9 @@ namespace GourmetShop.CustomerView
 
         private void btnShoppingCart_Click(object sender, EventArgs e)
         {
+            // CHECKME: Assigning current customer ID in session data to customer ID
+            SessionData.CurrentCustomerId = customer.Id;
+
             frmShoppingCart cart = new frmShoppingCart();
             cart.Show();
         }

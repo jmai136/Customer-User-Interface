@@ -16,11 +16,9 @@ namespace GourmetShop.CustomerView
     //CHECKME
     public partial class frmShoppingCart : Form
     {
-        // string connectionString = "GourmetShopConnectionString";
         public static string connectionString = ConfigurationManager.ConnectionStrings["GourmetShopConnectionString"].ConnectionString;
         private ShoppingCartRepository shoppingCartRepository = new ShoppingCartRepository(connectionString);
 
-      //  private ShoppingCartRepository shoppingCartRepository;
         public frmShoppingCart()
         {
             InitializeComponent();
@@ -33,6 +31,7 @@ namespace GourmetShop.CustomerView
             }
 
             // Allow only the "Quantity" column to be editable
+            // FIXME: System.NullReferenceException: 'Object reference not set to an instance of an object.'
             dgvShoppingCartView.Columns["Quantity"].ReadOnly = false;
 
 
