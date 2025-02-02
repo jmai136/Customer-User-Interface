@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.btnShoppingCart = new System.Windows.Forms.Button();
+            this.dgvCustViewProducts = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCustViewProducts)).BeginInit();
             this.SuspendLayout();
             // 
             // btnShoppingCart
@@ -42,14 +44,26 @@
             this.btnShoppingCart.UseVisualStyleBackColor = true;
             this.btnShoppingCart.Click += new System.EventHandler(this.btnShoppingCart_Click);
             // 
+            // dgvCustViewProducts
+            // 
+            this.dgvCustViewProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCustViewProducts.Location = new System.Drawing.Point(77, 63);
+            this.dgvCustViewProducts.Name = "dgvCustViewProducts";
+            this.dgvCustViewProducts.RowHeadersWidth = 51;
+            this.dgvCustViewProducts.RowTemplate.Height = 24;
+            this.dgvCustViewProducts.Size = new System.Drawing.Size(1246, 337);
+            this.dgvCustViewProducts.TabIndex = 1;
+            // 
             // frmCustomerMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1538, 511);
+            this.Controls.Add(this.dgvCustViewProducts);
             this.Controls.Add(this.btnShoppingCart);
             this.Name = "frmCustomerMain";
             this.Text = "Customer";
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCustViewProducts)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -57,6 +71,7 @@
         #endregion
 
         private System.Windows.Forms.Button btnShoppingCart;
+        private System.Windows.Forms.DataGridView dgvCustViewProducts;
     }
 }
 

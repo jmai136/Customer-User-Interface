@@ -45,6 +45,7 @@
             this.picCustPassword = new System.Windows.Forms.PictureBox();
             this.picAdminPassword = new System.Windows.Forms.PictureBox();
             this.btnExit = new System.Windows.Forms.Button();
+            this.btnNewAdmin = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picCustPassword)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picAdminPassword)).BeginInit();
             this.SuspendLayout();
@@ -185,7 +186,7 @@
             // 
             this.btnAdminLogin.Enabled = false;
             this.btnAdminLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdminLogin.Location = new System.Drawing.Point(357, 440);
+            this.btnAdminLogin.Location = new System.Drawing.Point(267, 440);
             this.btnAdminLogin.Name = "btnAdminLogin";
             this.btnAdminLogin.Size = new System.Drawing.Size(117, 42);
             this.btnAdminLogin.TabIndex = 13;
@@ -223,11 +224,24 @@
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
+            // btnNewAdmin
+            // 
+            this.btnNewAdmin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNewAdmin.Location = new System.Drawing.Point(418, 440);
+            this.btnNewAdmin.Name = "btnNewAdmin";
+            this.btnNewAdmin.Size = new System.Drawing.Size(155, 41);
+            this.btnNewAdmin.TabIndex = 17;
+            this.btnNewAdmin.Text = "New Admin";
+            this.btnNewAdmin.UseVisualStyleBackColor = true;
+            this.btnNewAdmin.Visible = false;
+            this.btnNewAdmin.Click += new System.EventHandler(this.btnNewAdmin_Click);
+            // 
             // frmLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 494);
+            this.Controls.Add(this.btnNewAdmin);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.picAdminPassword);
             this.Controls.Add(this.picCustPassword);
@@ -274,6 +288,7 @@
         private System.Windows.Forms.PictureBox picCustPassword;
         private System.Windows.Forms.PictureBox picAdminPassword;
         private System.Windows.Forms.Button btnExit;
+        private System.Windows.Forms.Button btnNewAdmin;
     }
 }
 

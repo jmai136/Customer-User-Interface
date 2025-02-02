@@ -194,6 +194,7 @@ namespace GourmetShop.DataAccess.Repositories
                         {
                             Id = Convert.ToInt32(reader["ProductID"]),
                             ProductName = reader["ProductName"].ToString(),
+                            SupplierId =Convert.ToInt32(reader["SupplierID"]),
                             UnitPrice = Convert.ToDecimal(reader["Price"])
                         });
                     }

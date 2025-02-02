@@ -45,6 +45,13 @@ namespace GourmetShop.LoginForm
             this.Hide();
         }
 
+        private void btnNewAdmin_Click(object sender, EventArgs e)
+        {
+            frmNewAdmin newAdmin = new frmNewAdmin();
+            newAdmin.Show();
+            this.Hide();
+        }
+
         private void chkAdmin_CheckedChanged(object sender, EventArgs e)
         {
             lblAdminPassword.Visible = chkAdmin.Checked;
@@ -52,6 +59,7 @@ namespace GourmetShop.LoginForm
             txtAdminPassword.Visible = chkAdmin.Checked;
             txtAdminUsername.Visible = chkAdmin.Checked;
             btnAdminLogin.Visible = chkAdmin.Checked;
+            btnNewAdmin.Visible = chkAdmin.Checked;
             picAdminPassword.Visible = chkAdmin.Checked;
             picAdminPassword.Image = Properties.Resources.eyeClosed;
 
@@ -131,5 +139,7 @@ namespace GourmetShop.LoginForm
         {
             Application.Exit();
         }
+
+        
     }
 }
