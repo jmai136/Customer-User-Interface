@@ -1,6 +1,6 @@
 ﻿namespace GourmetShop.WinForms
 {
-    partial class MainForm
+    partial class frmAdminMain
     {
         /// <summary>
         /// Required designer variable.

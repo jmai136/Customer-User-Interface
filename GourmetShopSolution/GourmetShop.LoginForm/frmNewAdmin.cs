@@ -95,6 +95,7 @@ namespace GourmetShop.LoginForm
         {
             lblAdminAccountCreated.Visible = true;
 
+            // CHECKME: Make sure that the admin has an email address
             User user = new User()
             {
                 FirstName = txtNewAdminFirstName.Text,

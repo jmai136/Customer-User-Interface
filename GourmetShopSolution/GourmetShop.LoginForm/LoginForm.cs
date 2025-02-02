@@ -1,6 +1,7 @@
 ﻿using GourmetShop.DataAccess.Entities;
 using GourmetShop.DataAccess.Services;
 using GourmetShop.LoginForm.Utils;
+using GourmetShop.WinForms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -114,20 +115,38 @@ namespace GourmetShop.LoginForm
                 Password = txtCustPassword.Text
             };
 
-            // TODO: Implement login functionality
-            if (_authService.Login(authentication.Username, authentication.Password) != -1)
+            // TODO: Implement login functionality, so grab the customer ID from the database based on the user ID
+            int userId = _authService.Login(authentication.Username, authentication.Password);
+
+            if (userId != -1)
                 MessageBox.Show("Login Successful");
 
-            //this.Close() or this.Hide();
-            //TODO enable the above when the button is hooked up.
+            // FIXME:  Should be able to close the login form after the customer logs in
+            this.Hide();.
         }
 
         //TODO use this button to actually log in an admin and take them to the admin view
         private void btnAdminLogin_Click(object sender, EventArgs e)
         {
+            Authentication authentication = new Authentication()
+            {
+                Username = txtAdminUsername.Text,
+                Password = txtAdminPassword.Text
+            };
 
-            //this.Close() or this.Hide();
-            //TODO enable the above when the button is hooked up.
+            int userId = _authService.Login(authentication.Username, authentication.Password);
+
+            if (userId == -1)
+            {
+                MessageBox.Show("Login Failed");
+                return;
+            }
+
+            frmAdminMain adminMain = new frmAdminMain(userId);
+            adminMain.Show();
+
+            // FIXME:  Should be able to close the login form after the admin logs in
+            this.Hide();
         }
 
         private void btnExit_Click(object sender, EventArgs e)

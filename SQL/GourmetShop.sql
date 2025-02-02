@@ -30,6 +30,15 @@ go
 
 /*==============================================================*/
 
+/*==============================================================*/
+/* TODO */
+/* Stored procedure: GetUser                                */
+	
+	-- Parameter: Role
+	-- Filter the users by the role from the User table and return them
+
+/*==============================================================*/
+
 
 /*==============================================================*/
 /* TABLE: Role                                             */
@@ -70,6 +79,36 @@ CREATE INDEX IndexAdminUserId ON "Admin" (
 UserId ASC
 )
 go
+
+/*==============================================================*/
+/* Stored procedure: GetAdminByUserId                                */
+	
+-- CHECKME: Do we need to return the information like name, etc. too?
+
+/*==============================================================*/
+CREATE PROCEDURE GetAdminByUserId
+    @UserId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+		IF NOT EXISTS (
+            SELECT * FROM [Admin] WHERE UserId = @UserId
+        )
+        BEGIN
+            RAISERROR('A user with this username already exists.', 16, 1);
+			RETURN;
+        END
+
+		SELECT * FROM [Admin] WHERE UserId = @UserId
+    END TRY
+    BEGIN CATCH
+        -- Handle any errors that occur
+        THROW;
+    END CATCH
+END;
+GO
+
 
 /*==============================================================*/
 /* Stored procedure: Admin Control: Filter through sales by customer              */
@@ -190,6 +229,35 @@ BEGIN
             Users U ON C.UserId = U.UserId
         ORDER BY 
             U.FirstName; -- Optional: Sort customers by first name
+    END TRY
+    BEGIN CATCH
+        -- Handle any errors that occur
+        THROW;
+    END CATCH
+END;
+GO
+
+/*==============================================================*/
+/* Stored procedure: GetCustomerByUserId                                */
+	
+-- CHECKME: Do we need to return the information like name, etc. too?
+
+/*==============================================================*/
+CREATE PROCEDURE GetCustomerByUserId
+    @UserId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+		IF NOT EXISTS (
+            SELECT * FROM [Customer] WHERE UserId = @UserId
+        )
+        BEGIN
+            RAISERROR('A user with this username already exists.', 16, 1);
+			RETURN;
+        END
+
+		SELECT * FROM [Customer] WHERE UserId = @UserId
     END TRY
     BEGIN CATCH
         -- Handle any errors that occur

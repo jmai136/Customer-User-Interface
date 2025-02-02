@@ -78,12 +78,14 @@
     <Compile Include="Repositories\Classes\ProductRepository.cs" />
     <Compile Include="Repositories\Classes\ShoppingCartRepository.cs" />
     <Compile Include="Repositories\Classes\SupplierRepository.cs" />
+    <Compile Include="Repositories\Classes\UserRepository.cs" />
     <Compile Include="Repositories\Interfaces\Authentication Subinterfaces\IAuthRepository.cs" />
     <Compile Include="Repositories\Interfaces\CRUD Subinterfaces\IProductRepository_CRUD.cs" />
     <Compile Include="Repositories\Interfaces\CRUD Subinterfaces\IShoppingCartRepository.cs" />
     <Compile Include="Repositories\Interfaces\CRUD Subinterfaces\ISupplierRepository_CRUD.cs" />
-    <Compile Include="Repositories\Interfaces\IAdmin.cs" />
     <Compile Include="Repositories\Interfaces\IGourmetShopRepository.cs" />
+    <Compile Include="Repositories\Interfaces\User Subinterfaces\IAdmin.cs" />
+    <Compile Include="Repositories\Interfaces\User Subinterfaces\IUserRepository.cs" />
     <Compile Include="Services\Authentication Subservices\AuthService.cs" />
     <Compile Include="Services\Authentication Subservices\PasswordHasher.cs" />
   </ItemGroup>

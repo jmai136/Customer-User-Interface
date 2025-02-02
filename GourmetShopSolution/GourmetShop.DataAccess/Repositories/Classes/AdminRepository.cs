@@ -20,6 +20,42 @@ namespace GourmetShop.DataAccess.Repositories.Classes
         {
         }
 
+        public Admin GetByUserId(int userId)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                using (SqlCommand cmd = new SqlCommand("GetAdminByUserId", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Admin admin = new Admin();
+
+                        if (reader.Read())
+                        {
+                            admin.Id = reader.GetInt32(reader.GetOrdinal("Id"));
+                            admin.UserId = reader.GetInt32(reader.GetOrdinal("UserId"));
+                            admin.Email = reader.GetString(reader.GetOrdinal("Email"));
+                        }
+
+                        return admin;
+                    }
+                }
+            }
+            catch (SqlException ex) // Catches SQL-specific errors
+            {
+                throw; // Rethrow the exception to the calling code
+            }
+            catch (Exception ex) // Catches any other unexpected errors
+            {
+                throw; // Rethrow the exception to the calling code
+            }
+        }
+
         public (int TotalUnitsSold, decimal TotalSalesAmount) GetProductSales(int productId)
         {
             try

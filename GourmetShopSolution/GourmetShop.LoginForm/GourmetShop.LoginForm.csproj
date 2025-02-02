@@ -126,6 +126,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\GourmetShop.AdminForm\GourmetShop.AdminForm.csproj">
+      <Project>{17cef270-99a5-4904-b36f-bd3b674703d0}</Project>
+      <Name>GourmetShop.AdminForm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GourmetShop.DataAccess\GourmetShop.DataAccess.csproj">
       <Project>{65f95d70-55c4-44b7-a223-95279cbb0459}</Project>
       <Name>GourmetShop.DataAccess</Name>

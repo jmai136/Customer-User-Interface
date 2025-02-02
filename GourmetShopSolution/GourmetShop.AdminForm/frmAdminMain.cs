@@ -15,17 +15,29 @@ using System.Windows.Forms;
 
 namespace GourmetShop.WinForms
 {
-    public partial class MainForm : Form
+    public partial class frmAdminMain : Form
     {
 
         public static string connectionString = ConfigurationManager.ConnectionStrings["GourmetShopConnectionString"].ConnectionString;
         private AdminRepository _adminRepository = new AdminRepository(connectionString);
         private ProductRepository productRepository = new ProductRepository(connectionString);
-        public MainForm()
+
+        public Admin admin;
+
+        public frmAdminMain()
         {
             InitializeComponent();
             LoadAvailableProducts();
             dgvAvailableProducts.SelectionChanged += dgvAvailableProducts_SelectionChanged;
+        }
+
+        // Assign the admin's ID to the form to be used in other forms
+        public frmAdminMain(int userId): this()
+        {
+            // Use the admin's ID to fetch the admin's data which you can then do stuff with it
+            admin = _adminRepository.GetByUserId(userId);
+
+            MessageBox.Show($"Welcome, {admin.Id}!");
         }
 
         private void vts_mi_ViewProducts_Click(object sender, EventArgs e)
