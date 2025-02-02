@@ -174,8 +174,7 @@ namespace GourmetShop.DataAccess.Repositories.Classes
                     }
                 }
 
-                // Show success message after order is placed
-                MessageBox.Show("Order has been placed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+               
             }
             catch (SqlException ex)
             {

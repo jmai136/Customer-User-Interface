@@ -91,6 +91,7 @@ namespace GourmetShop.CustomerView
 
             frmShoppingCart cart = new frmShoppingCart();
             cart.Show();
+            this.Hide();
         }
 
 
@@ -150,29 +151,6 @@ namespace GourmetShop.CustomerView
                 MessageBox.Show($"Unable to filter products by suppliers: {ex.Message}");
             }
         }
-        //TODO
-        //Someone smarter than me double check this!!!!
-        //private void AddToCart(int customerId, int productId, int quantity)
-        //{
-        //    //_ = SessionData.CurrentCustomerId;
-        //    try
-        //    {
-        //        using (SqlConnection conn = new SqlConnection(connectionString))
-        //        using (SqlCommand cmd = new SqlCommand("AddToCart", conn))
-        //        {
-        //            cmd.CommandType = CommandType.StoredProcedure;
-        //            cmd.Parameters.AddWithValue("@CustomerID", customerId);
-        //            cmd.Parameters.AddWithValue("@ProductID", productId);
-        //            cmd.Parameters.AddWithValue("@Quantity", quantity);
-                    
-        //            conn.Open();
-        //            cmd.ExecuteNonQuery();
-        //        }
-
-        //    }catch(Exception ex){
-        //        lblAddToCart.Text = "Failed to add to cart because: " + ex.Message;
-        //    }
-        //}
 
         private void btnAddToCart_Click(object sender, EventArgs e)
         {
@@ -182,8 +160,13 @@ namespace GourmetShop.CustomerView
                 return;
             }
 
-            // Debugging: Check if the Customer ID is valid
-            MessageBox.Show($"Current Customer ID: {SessionData.CurrentCustomerId}");
+            // Check if quantity is 0 //added by yareni
+           int  quantity = (int)nudQuantity.Value;
+            if (quantity == 0)
+            {
+                MessageBox.Show("Quantity cannot be 0. Please select a valid quantity.", "Invalid Quantity", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             if (SessionData.CurrentCustomerId <= 0)
             {
@@ -193,7 +176,7 @@ namespace GourmetShop.CustomerView
 
             int customerId = SessionData.CurrentCustomerId;
             int productId = Convert.ToInt32(dgvCustViewProducts.SelectedRows[0].Cells["Id"].Value);
-            int quantity = (int)nudQuantity.Value;
+           // int quantity = (int)nudQuantity.Value;
 
             try
             {

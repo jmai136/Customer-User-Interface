@@ -61,9 +61,9 @@
             // 
             // btnRemoveProduct
             // 
-            this.btnRemoveProduct.Location = new System.Drawing.Point(437, 187);
+            this.btnRemoveProduct.Location = new System.Drawing.Point(401, 187);
             this.btnRemoveProduct.Name = "btnRemoveProduct";
-            this.btnRemoveProduct.Size = new System.Drawing.Size(116, 23);
+            this.btnRemoveProduct.Size = new System.Drawing.Size(156, 23);
             this.btnRemoveProduct.TabIndex = 2;
             this.btnRemoveProduct.Text = "Remove Product";
             this.btnRemoveProduct.UseVisualStyleBackColor = true;
@@ -71,7 +71,7 @@
             // 
             // btnPlaceOrder
             // 
-            this.btnPlaceOrder.Location = new System.Drawing.Point(592, 313);
+            this.btnPlaceOrder.Location = new System.Drawing.Point(505, 375);
             this.btnPlaceOrder.Name = "btnPlaceOrder";
             this.btnPlaceOrder.Size = new System.Drawing.Size(152, 34);
             this.btnPlaceOrder.TabIndex = 3;
@@ -83,7 +83,7 @@
             // 
             this.btnReturnHome.Location = new System.Drawing.Point(583, 187);
             this.btnReturnHome.Name = "btnReturnHome";
-            this.btnReturnHome.Size = new System.Drawing.Size(116, 23);
+            this.btnReturnHome.Size = new System.Drawing.Size(157, 23);
             this.btnReturnHome.TabIndex = 4;
             this.btnReturnHome.Text = "Return to Home";
             this.btnReturnHome.UseVisualStyleBackColor = true;
