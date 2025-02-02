@@ -852,6 +852,7 @@ BEGIN
     SELECT 
         Id AS ProductID,       -- Include ProductID
         ProductName, 
+		SupplierId,
         UnitPrice AS Price
     FROM Product
     WHERE IsDiscontinued = 0;
