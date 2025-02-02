@@ -31,8 +31,17 @@ namespace GourmetShop.CustomerView
             }
 
             // Allow only the "Quantity" column to be editable
-            // FIXME: System.NullReferenceException: 'Object reference not set to an instance of an object.'
-            dgvShoppingCartView.Columns["Quantity"].ReadOnly = false;
+            
+            if (dgvShoppingCartView.Columns.Contains("Quantity"))
+            {
+                dgvShoppingCartView.Columns["Quantity"].ReadOnly = false;
+            }
+            else
+            {
+                // Handle the case where the column doesn't exist
+                // This might be useful for logging or notifying the user
+                Console.WriteLine("Quantity column not found in DataGridView.");
+            }
 
 
 
