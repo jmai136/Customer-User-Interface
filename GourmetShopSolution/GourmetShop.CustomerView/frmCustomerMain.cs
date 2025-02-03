@@ -89,9 +89,11 @@ namespace GourmetShop.CustomerView
             // CHECKME: Assigning current customer ID in session data to customer ID
             SessionData.CurrentCustomerId = customer.Id;
 
-            frmShoppingCart cart = new frmShoppingCart();
-            cart.Show();
             this.Hide();
+
+            frmShoppingCart cart = new frmShoppingCart();
+            cart.Owner = this;
+            cart.Show();
         }
 
 

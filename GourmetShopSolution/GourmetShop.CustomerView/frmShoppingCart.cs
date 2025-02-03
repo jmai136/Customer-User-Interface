@@ -110,10 +110,8 @@ namespace GourmetShop.CustomerView
 
         private void btnReturnHome_Click(object sender, EventArgs e)
         {
-            frmCustomerMain  customerview= new frmCustomerMain();
-            customerview.Show();
+            this.Owner.Show();
             this.Close();
-            
         }
 
 
@@ -149,11 +147,10 @@ namespace GourmetShop.CustomerView
                 ClearCart();
                 // If we reach here, the order was placed successfully
                 MessageBox.Show("Your order has been successfully placed!", "Order Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                
 
-                // Open the Customer View form with the product list
-                frmCustomerMain customerView = new frmCustomerMain();
-                customerView.Show();
+
+                // FIXED: Open the Customer View form with the product list
+                this.Owner.Show();
                 this.Close();
             }
             catch (Exception ex)
@@ -243,6 +240,12 @@ namespace GourmetShop.CustomerView
 
                 LoadShoppingCart();
             }
+        }
+
+        private void frmShoppingCart_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.Owner.Show();
+            this.Close();
         }
     }
 }
