@@ -36,10 +36,7 @@ namespace GourmetShop.DataAccess.Repositories.Classes
                     cmd.ExecuteNonQuery();
                 }
 
-                if (SessionData.CurrentCartId == -1)
-                {
-                    SessionData.CurrentCartId = GetCartIdForCustomer(customerId);
-                }
+              
             }
             catch (SqlException ex)
             {
@@ -118,6 +115,8 @@ namespace GourmetShop.DataAccess.Repositories.Classes
 
         public DataTable ViewCart(int cartId)
         {
+
+            
             try
             {
                 using (SqlConnection conn = new SqlConnection(_connectionString))
@@ -151,6 +150,8 @@ namespace GourmetShop.DataAccess.Repositories.Classes
 
 
         }
+
+        
 
         public void PlaceOrder(int customerId)
         {
@@ -191,28 +192,7 @@ namespace GourmetShop.DataAccess.Repositories.Classes
 
 
 
-        //public int PlaceOrder(int customerId)
-        //{
-        //    using (SqlConnection conn = new SqlConnection(_connectionString))
-        //    {
-        //        using (SqlCommand cmd = new SqlCommand("PlaceOrder", conn))
-        //        {
-        //            cmd.CommandType = CommandType.StoredProcedure;
-        //            cmd.Parameters.AddWithValue("@CustomerId", customerId);
-
-        //            conn.Open();
-        //            using (SqlDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                if (reader.Read())
-        //                {
-        //                    int orderId = Convert.ToInt32(reader["OrderId"]);
-        //                    return orderId;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return -1; // Return -1 if order creation failed
-        //}
+       
 
         public int GetCartIdForCustomer(int customerId)
         {

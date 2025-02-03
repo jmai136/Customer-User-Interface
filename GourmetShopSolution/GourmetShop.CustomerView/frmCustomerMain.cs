@@ -176,11 +176,18 @@ namespace GourmetShop.CustomerView
 
             int customerId = SessionData.CurrentCustomerId;
             int productId = Convert.ToInt32(dgvCustViewProducts.SelectedRows[0].Cells["Id"].Value);
-           // int quantity = (int)nudQuantity.Value;
-
+          
             try
             {
                 _shoppingcartRepository.AddToCart(customerId, productId, quantity);
+
+                // Fetch and store the cart ID in the session
+                int cartId = _shoppingcartRepository.GetCartIdForCustomer(customerId);
+                if (cartId > 0)
+                {
+                    SessionData.CurrentCartId = cartId;
+                }
+
                 MessageBox.Show("Added to cart!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)

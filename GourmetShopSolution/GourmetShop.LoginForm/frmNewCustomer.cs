@@ -112,7 +112,12 @@ namespace GourmetShop.LoginForm
                 Password = txtNewCustPassword.Text
             };
 
-            _authService.Register(user, authentication);
+            // Save the new customer ID in session so they can place an order immediately
+
+            int newCustomerId = _authService.Register(user, authentication);
+
+          
+            SessionData.CurrentCustomerId = newCustomerId;
         }
 
         private void frmNewCustomer_FormClosing(object sender, FormClosingEventArgs e)

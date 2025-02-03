@@ -13,6 +13,6 @@ namespace GourmetShop.DataAccess.Entities
 
         public static int CurrentAdminId { get; set; } = 1; //starts with no admin
 
-        public static int CurrentCartId { get; set; } = -1; // Track the cart ID
+        public static int CurrentCartId { get; set; }  // Track the cart ID
     }
 }

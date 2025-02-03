@@ -116,6 +116,8 @@ namespace GourmetShop.CustomerView
             
         }
 
+
+        //below is a button accidently named it lbl
         private void lblPlaceOrder_Click(object sender, EventArgs e)
         {
             bool isCartEmpty = true;
@@ -166,8 +168,8 @@ namespace GourmetShop.CustomerView
 
         private void ClearCart()
         {
-            // Reset cart in session and clear DataGridView
-            SessionData.CurrentCartId = -1; // Reset cart ID in session
+            
+          
             dgvShoppingCartView.DataSource = null; // Clear DataGridView
             lblTotalAmountDue.Text = "Total Amount Due: $0.00";
         }

@@ -2,6 +2,7 @@
 using GourmetShop.DataAccess.Entities;
 using GourmetShop.DataAccess.Repositories;
 using GourmetShop.DataAccess.Repositories.Classes;
+using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using GourmetShop.DataAccess.Services;
 using GourmetShop.LoginForm.Utils;
 using GourmetShop.WinForms;
@@ -24,6 +25,8 @@ namespace GourmetShop.LoginForm
         public static string connectionString = ConfigurationManager.ConnectionStrings["GourmetShopConnectionString"].ConnectionString;
         AuthService _authService = new AuthService(LoginFormUtils._connectionString);
         private CustomerRepository customerRepository = new CustomerRepository(connectionString);
+        private ShoppingCartRepository shoppingcartRepository = new ShoppingCartRepository(connectionString);
+
 
         public frmLogin()
         {
@@ -121,7 +124,7 @@ namespace GourmetShop.LoginForm
                 Password = txtCustPassword.Text
             };
 
-            // TODO: Implement login functionality, so grab the customer ID from the database based on the user ID
+          
             int userId = _authService.Login(authentication.Username, authentication.Password);
 
             if (userId == -1)
@@ -129,9 +132,19 @@ namespace GourmetShop.LoginForm
                 MessageBox.Show("Login Failed");
                 return;
             }
+
+            //retrievs customer id and sets it as current session data
             
-           Customer customer = customerRepository.GetByUserId(userId);
+            Customer customer = customerRepository.GetByUserId(userId);
             SessionData.CurrentCustomerId = customer.Id;
+
+            //checks if customer has an existing cart that has products in it.
+            int cartId = shoppingcartRepository.GetCartIdForCustomer(userId);
+            if (cartId > 0)
+            {
+                SessionData.CurrentCartId = cartId; // Apply existing cart to session
+            }
+
             frmCustomerMain customerMain = new frmCustomerMain(userId);
             customerMain.Show();
 
