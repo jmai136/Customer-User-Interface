@@ -50,16 +50,20 @@ namespace GourmetShop.LoginForm
 
         private void btnNewCustomer_Click(object sender, EventArgs e)
         {
-            frmNewCustomer newCustomer = new frmNewCustomer();
-            newCustomer.Show();
             this.Hide();
+
+            frmNewCustomer newCustomer = new frmNewCustomer();
+            newCustomer.Owner = this;
+            newCustomer.Show();
         }
 
         private void btnNewAdmin_Click(object sender, EventArgs e)
         {
-            frmNewAdmin newAdmin = new frmNewAdmin();
-            newAdmin.Show();
             this.Hide();
+
+            frmNewAdmin newAdmin = new frmNewAdmin();
+            newAdmin.Owner = this;
+            newAdmin.Show();
         }
 
         private void chkAdmin_CheckedChanged(object sender, EventArgs e)
@@ -145,12 +149,10 @@ namespace GourmetShop.LoginForm
                 SessionData.CurrentCartId = cartId; // Apply existing cart to session
             }
 
-            frmCustomerMain customerMain = new frmCustomerMain(userId);
-            customerMain.Show();
-
-            // FIXME: Need to be able to clsoe the login form otherwise process will keep running in background even when you're done with the app
-            // Probably going to have to close this form, assign a handler to the FormClosing, open the other forms from there, then actually implement application exit when they're done
             this.Hide();
+            frmCustomerMain customerMain = new frmCustomerMain(userId);
+            customerMain.FormClosed += (s, args) => this.Close();
+            customerMain.Show();
         }
 
         //TODO use this button to actually log in an admin and take them to the admin view
@@ -172,11 +174,10 @@ namespace GourmetShop.LoginForm
             }
 
             frmAdminMain adminMain = new frmAdminMain(userId);
-            adminMain.Show();
 
-            // FIXME: Need to be able to clsoe the login form otherwise process will keep running in background even when you're done with the app
-            // Probably going to have to close this form, assign a handler to the FormClosing, open the other forms from there, then actually implement application exit when they're done
             this.Hide();
+            adminMain.FormClosed += (s, args) => this.Close();
+            adminMain.Show();
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -186,7 +187,7 @@ namespace GourmetShop.LoginForm
 
         private void frmLogin_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Application.Exit();
+            // Application.Exit();
         }
     }
 }

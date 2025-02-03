@@ -85,8 +85,7 @@ namespace GourmetShop.LoginForm
 
         private void btnReturn_Click(object sender, EventArgs e)
         {
-            frmLogin frmLogin = new frmLogin();
-            frmLogin.Show();
+            this.Owner.Show();
             this.Close();
         }
 
@@ -118,13 +117,6 @@ namespace GourmetShop.LoginForm
 
           
             SessionData.CurrentCustomerId = newCustomerId;
-        }
-
-        private void frmNewCustomer_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            frmLogin login = new frmLogin();
-            login.Show();
-            this.Hide();
         }
     }
 }

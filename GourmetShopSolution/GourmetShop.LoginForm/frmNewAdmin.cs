@@ -79,16 +79,15 @@ namespace GourmetShop.LoginForm
         }
         private void btnAdminReturn_Click(object sender, EventArgs e)
         {
-            frmLogin frmLogin = new frmLogin();
-            frmLogin.Show();
+            this.Owner.Show();
             this.Close();
         }
 
         private void frmNewAdmin_FormClosing(object sender, FormClosingEventArgs e)
         {
-            frmLogin login = new frmLogin();
+            /*frmLogin login = new frmLogin();
             login.Show();
-            this.Hide();
+            this.Hide();*/
         }
 
         private void btnNewAdminCreateAccount_Click(object sender, EventArgs e)
