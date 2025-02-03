@@ -182,12 +182,12 @@ namespace GourmetShop.LoginForm
 
         private void btnExit_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            this.Close();
         }
 
         private void frmLogin_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Application.Exit();
+            Application.Exit();
         }
     }
 }

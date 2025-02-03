@@ -76,8 +76,8 @@ namespace GourmetShop.WinForms
         {
             if (dgvAvailableProducts.SelectedRows.Count > 0)
             {
-                // Get selected product ID
-                int productId = Convert.ToInt32(dgvAvailableProducts.SelectedRows[0].Cells["ProductID"].Value);
+                // FIXED: Should've been ID instead of ProductID
+                int productId = Convert.ToInt32(dgvAvailableProducts.SelectedRows[0].Cells["ID"].Value);
 
                 // Call repository method to fetch sales data
                 var (totalUnitsSold, totalSalesAmount) = _adminRepository.GetProductSales(productId);
