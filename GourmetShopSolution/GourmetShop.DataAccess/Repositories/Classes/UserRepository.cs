@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GourmetShop.DataAccess.Repositories.Classes
+namespace GourmetShop.DataAccess.Repositories
 {
     public class UserRepository: GourmetShopRepository
     {

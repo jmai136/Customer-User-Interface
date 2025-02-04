@@ -77,10 +77,12 @@ namespace GourmetShop.LoginForm
 
             bool passwordMatch = txtNewCustPassword.Text == txtNewCustConfirmPassword.Text;
 
+            bool isPhoneNumberValid = PhoneNumberValidator.IsValidPhoneNumber(txtNewCustPhone.Text);
+
             lblinvalidEmail.Visible = !isEmailValid;
             lblPassMisMatch.Visible= !passwordMatch;
 
-            btnNewCustCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch;
+            btnNewCustCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch && isPhoneNumberValid;
         }
 
         private void btnReturn_Click(object sender, EventArgs e)
@@ -113,10 +115,16 @@ namespace GourmetShop.LoginForm
 
             // Save the new customer ID in session so they can place an order immediately
 
-            int newCustomerId = _authService.Register(user, authentication);
+            try
+            {
+                int newCustomerId = _authService.Register(user, authentication);
 
-          
-            SessionData.CurrentCustomerId = newCustomerId;
+                SessionData.CurrentCustomerId = newCustomerId;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to create account: {ex.Message}");
+            }
         }
     }
 }

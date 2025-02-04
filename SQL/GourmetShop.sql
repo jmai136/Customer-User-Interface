@@ -21,23 +21,28 @@ CREATE TABLE [User] (
 )
 go
 
-/*==============================================================*/
-/* TODO */
-/* Stored procedure: GetUsersByRole                                */
-	
-	-- Parameter: Role
-	-- Filter the users by the role from the User table and return them
+CREATE PROCEDURE DeleteUser
+    @UserId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+		IF NOT EXISTS (
+            SELECT * FROM [User] WHERE Id = @UserId
+        )
+        BEGIN
+            RAISERROR('This user does not exist.', 16, 1);
+			RETURN;
+        END
 
-/*==============================================================*/
-
-/*==============================================================*/
-/* TODO */
-/* Stored procedure: GetUser                                */
-	
-	-- Parameter: Role
-	-- Filter the users by the role from the User table and return them
-
-/*==============================================================*/
+		DELETE FROM [User] WHERE Id = @UserId
+    END TRY
+    BEGIN CATCH
+        -- Handle any errors that occur
+        THROW;
+    END CATCH
+END;
+GO
 
 
 /*==============================================================*/
@@ -96,7 +101,7 @@ BEGIN
             SELECT * FROM [Admin] WHERE UserId = @UserId
         )
         BEGIN
-            RAISERROR('A user with this username already exists.', 16, 1);
+            RAISERROR('An admin with this username does not exist.', 16, 1);
 			RETURN;
         END
 
@@ -253,7 +258,7 @@ BEGIN
             SELECT * FROM [Customer] WHERE UserId = @UserId
         )
         BEGIN
-            RAISERROR('A user with this username already exists.', 16, 1);
+            RAISERROR('A customer with this username does not exist.', 16, 1);
 			RETURN;
         END
 
@@ -1246,11 +1251,13 @@ GO
 ALTER TABLE "Admin"
 	ADD CONSTRAINT FK_ADMIN_REFERENCE_USER FOREIGN KEY (UserId) 
 		references [User](Id)
+		ON  DELETE CASCADE
 GO
 
 ALTER TABLE "Customer"
 	ADD CONSTRAINT FK_CUSTOMER_REFERENCE_USER FOREIGN KEY (UserId) 
 		references [User](Id)
+		ON  DELETE CASCADE
 GO
 
 ALTER TABLE "Authentication"

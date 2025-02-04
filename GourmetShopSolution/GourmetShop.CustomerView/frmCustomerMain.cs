@@ -11,8 +11,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using GourmetShop.DataAccess.Entities;
 using GourmetShop.DataAccess.Repositories;
-using GourmetShop.DataAccess.Repositories.Classes;
-using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 
 namespace GourmetShop.CustomerView
 {

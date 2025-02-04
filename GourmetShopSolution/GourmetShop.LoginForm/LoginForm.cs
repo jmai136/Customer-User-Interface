@@ -1,7 +1,7 @@
 ﻿using GourmetShop.CustomerView;
 using GourmetShop.DataAccess.Entities;
 using GourmetShop.DataAccess.Repositories;
-using GourmetShop.DataAccess.Repositories.Classes;
+using GourmetShop.DataAccess.Repositories;
 using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using GourmetShop.DataAccess.Services;
 using GourmetShop.LoginForm.Utils;
@@ -128,31 +128,32 @@ namespace GourmetShop.LoginForm
                 Password = txtCustPassword.Text
             };
 
-          
-            int userId = _authService.Login(authentication.Username, authentication.Password);
 
-            if (userId == -1)
+            try
             {
-                MessageBox.Show("Login Failed");
-                return;
+                int userId = _authService.Login(authentication.Username, authentication.Password);
+
+                //retrievs customer id and sets it as current session data
+
+                Customer customer = customerRepository.GetByUserId(userId);
+                SessionData.CurrentCustomerId = customer.Id;
+
+                //checks if customer has an existing cart that has products in it.
+                int cartId = shoppingcartRepository.GetCartIdForCustomer(userId);
+                if (cartId > 0)
+                {
+                    SessionData.CurrentCartId = cartId; // Apply existing cart to session
+                }
+
+                this.Hide();
+                frmCustomerMain customerMain = new frmCustomerMain(userId);
+                customerMain.FormClosed += (s, args) => this.Close();
+                customerMain.Show();
             }
-
-            //retrievs customer id and sets it as current session data
-            
-            Customer customer = customerRepository.GetByUserId(userId);
-            SessionData.CurrentCustomerId = customer.Id;
-
-            //checks if customer has an existing cart that has products in it.
-            int cartId = shoppingcartRepository.GetCartIdForCustomer(userId);
-            if (cartId > 0)
+            catch (Exception ex)
             {
-                SessionData.CurrentCartId = cartId; // Apply existing cart to session
+                MessageBox.Show($"Login Failed: {ex.Message}");
             }
-
-            this.Hide();
-            frmCustomerMain customerMain = new frmCustomerMain(userId);
-            customerMain.FormClosed += (s, args) => this.Close();
-            customerMain.Show();
         }
 
         //TODO use this button to actually log in an admin and take them to the admin view
@@ -164,20 +165,20 @@ namespace GourmetShop.LoginForm
                 Password = txtAdminPassword.Text
             };
 
-            int userId = _authService.Login(authentication.Username, authentication.Password);
-            
-
-            if (userId == -1)
+            try
             {
-                MessageBox.Show("Login Failed");
-                return;
+                int userId = _authService.Login(authentication.Username, authentication.Password);
+
+                frmAdminMain adminMain = new frmAdminMain(userId);
+
+                this.Hide();
+                adminMain.FormClosed += (s, args) => this.Close();
+                adminMain.Show();
             }
-
-            frmAdminMain adminMain = new frmAdminMain(userId);
-
-            this.Hide();
-            adminMain.FormClosed += (s, args) => this.Close();
-            adminMain.Show();
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Login Failed: {ex.Message}");
+            }
         }
 
         private void btnExit_Click(object sender, EventArgs e)

@@ -1,6 +1,4 @@
 ﻿using GourmetShop.DataAccess.Entities;
-using GourmetShop.DataAccess.Repositories.Interfaces;
-using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -9,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GourmetShop.DataAccess.Repositories.Classes
+namespace GourmetShop.DataAccess.Repositories
 {
 
     //CHECKME

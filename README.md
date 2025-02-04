@@ -1,9 +1,11 @@
-# Customer User Interface
+# Gourmet Shop Application
 ## Summary
 Create the customer WinForms appl, and update the DataAccess library. 
 
 ## Setup
-To create the database, use the scripts under SQL Stored Procedures  -> DB Creation, then those in SQL Stored Procedures -> CRUD Operations. Under `Git->Open in command prompt`, type in `git update-index --skip-worktree ./GourmetShopSolution/Config/ConnectionStrings.config`.  The file remains in the repository and GitHub, but your local changes are ignored. 
+To create the database, run the script `GourmetShop.sql` under the `SQL` folder. 
+
+In Visual Studio, under `Git->Open in command prompt`, type in `git update-index --skip-worktree ./GourmetShopSolution/Config/ConnectionStrings.config`.  The file remains in the repository and GitHub, but your local changes are ignored. Place your connection string in that file.
 
 ## Assignment Instructions
 ```

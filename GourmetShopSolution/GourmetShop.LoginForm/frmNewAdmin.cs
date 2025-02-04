@@ -44,10 +44,12 @@ namespace GourmetShop.LoginForm
 
             bool passwordMatch = txtNewAdminPassword.Text == txtNewAdminConfirmPassword.Text;
 
+            bool isPhoneNumberValid = PhoneNumberValidator.IsValidPhoneNumber(txtNewAdminPhone.Text);
+
             lblAdminInvalidEmail.Visible = !isEmailValid;
             lblAdminPassMisMatch.Visible = !passwordMatch;
 
-            btnNewAdminCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch;
+            btnNewAdminCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch && isPhoneNumberValid;
         }
 
         private void picNewAdminPassword_Click(object sender, EventArgs e)
@@ -92,8 +94,6 @@ namespace GourmetShop.LoginForm
 
         private void btnNewAdminCreateAccount_Click(object sender, EventArgs e)
         {
-            lblAdminAccountCreated.Visible = true;
-
             // CHECKME: Make sure that the admin has an email address
             User user = new User()
             {
@@ -111,7 +111,15 @@ namespace GourmetShop.LoginForm
                 Password = txtNewAdminPassword.Text
             };
 
-            _authService.Register(user, authentication);
+            try
+            {
+                int newCustomerId = _authService.Register(user, authentication);
+                lblAdminAccountCreated.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to create account: {ex.Message}");
+            }
         }
     }
 }

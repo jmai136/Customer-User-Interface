@@ -66,6 +66,7 @@ namespace GourmetShop.WinForms.Utils
 
     public static class GourmetShopValidators
     {
+        // TODO: Refactor this
         public static bool IsPhoneNumber(string phoneNum)
         {
             // https://regex101.com/r/wZ4uU6/2
