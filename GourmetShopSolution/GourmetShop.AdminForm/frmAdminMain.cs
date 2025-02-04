@@ -1,6 +1,5 @@
 ﻿using GourmetShop.DataAccess.Entities;
 using GourmetShop.DataAccess.Repositories;
-using GourmetShop.DataAccess.Repositories.Classes;
 using GourmetShop.WinForms.Forms;
 using System;
 using System.Collections.Generic;

@@ -21,6 +21,29 @@ CREATE TABLE [User] (
 )
 go
 
+CREATE PROCEDURE DeleteUser
+    @UserId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+		IF NOT EXISTS (
+            SELECT * FROM [User] WHERE Id = @UserId
+        )
+        BEGIN
+            RAISERROR('This user does not exist.', 16, 1);
+			RETURN;
+        END
+
+		DELETE FROM [User] WHERE Id = @UserId
+    END TRY
+    BEGIN CATCH
+        -- Handle any errors that occur
+        THROW;
+    END CATCH
+END;
+GO
+
 
 /*==============================================================*/
 /* TABLE: Role                                             */
@@ -78,7 +101,7 @@ BEGIN
             SELECT * FROM [Admin] WHERE UserId = @UserId
         )
         BEGIN
-            RAISERROR('A user with this username does not exist.', 16, 1);
+            RAISERROR('An admin with this username does not exist.', 16, 1);
 			RETURN;
         END
 
@@ -235,7 +258,7 @@ BEGIN
             SELECT * FROM [Customer] WHERE UserId = @UserId
         )
         BEGIN
-            RAISERROR('A user with this username does not exist.', 16, 1);
+            RAISERROR('A customer with this username does not exist.', 16, 1);
 			RETURN;
         END
 
@@ -1228,11 +1251,13 @@ GO
 ALTER TABLE "Admin"
 	ADD CONSTRAINT FK_ADMIN_REFERENCE_USER FOREIGN KEY (UserId) 
 		references [User](Id)
+		ON  DELETE CASCADE
 GO
 
 ALTER TABLE "Customer"
 	ADD CONSTRAINT FK_CUSTOMER_REFERENCE_USER FOREIGN KEY (UserId) 
 		references [User](Id)
+		ON  DELETE CASCADE
 GO
 
 ALTER TABLE "Authentication"

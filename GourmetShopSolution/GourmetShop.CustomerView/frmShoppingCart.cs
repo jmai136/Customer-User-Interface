@@ -1,5 +1,5 @@
 ﻿using GourmetShop.DataAccess.Entities;
-using GourmetShop.DataAccess.Repositories.Classes;
+using GourmetShop.DataAccess.Repositories;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

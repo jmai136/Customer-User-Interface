@@ -9,7 +9,7 @@ using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using GourmetShop.DataAccess.Entities;
 using System.Windows.Forms;
 
-namespace GourmetShop.DataAccess.Repositories.Classes
+namespace GourmetShop.DataAccess.Repositories
 {
     //CHECKME
     public class ShoppingCartRepository : GourmetShopRepository, IShoppingCartRepository

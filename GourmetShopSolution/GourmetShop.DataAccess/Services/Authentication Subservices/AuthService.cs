@@ -28,10 +28,17 @@ namespace GourmetShop.DataAccess.Services
 
         public int Login(string username, string password)
         {
-            if (!PasswordHasher.VerifyPassword(password, _authRepository.GetPassword(username)))
-                return -1;
-                
-            return _authRepository.GetUserId(username);
+            try
+            {
+                if (!PasswordHasher.VerifyPassword(password, _authRepository.GetPassword(username)))
+                    throw new Exception("Invalid password");
+
+                return _authRepository.GetUserId(username);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

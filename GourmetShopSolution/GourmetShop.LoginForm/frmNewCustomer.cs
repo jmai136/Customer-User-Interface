@@ -113,10 +113,16 @@ namespace GourmetShop.LoginForm
 
             // Save the new customer ID in session so they can place an order immediately
 
-            int newCustomerId = _authService.Register(user, authentication);
+            try
+            {
+                int newCustomerId = _authService.Register(user, authentication);
 
-          
-            SessionData.CurrentCustomerId = newCustomerId;
+                SessionData.CurrentCustomerId = newCustomerId;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to create account: {ex.Message}");
+            }
         }
     }
 }
