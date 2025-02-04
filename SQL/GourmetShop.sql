@@ -21,24 +21,6 @@ CREATE TABLE [User] (
 )
 go
 
-/*==============================================================*/
-/* TODO */
-/* Stored procedure: GetUsersByRole                                */
-	
-	-- Parameter: Role
-	-- Filter the users by the role from the User table and return them
-
-/*==============================================================*/
-
-/*==============================================================*/
-/* TODO */
-/* Stored procedure: GetUser                                */
-	
-	-- Parameter: Role
-	-- Filter the users by the role from the User table and return them
-
-/*==============================================================*/
-
 
 /*==============================================================*/
 /* TABLE: Role                                             */
@@ -96,7 +78,7 @@ BEGIN
             SELECT * FROM [Admin] WHERE UserId = @UserId
         )
         BEGIN
-            RAISERROR('A user with this username already exists.', 16, 1);
+            RAISERROR('A user with this username does not exist.', 16, 1);
 			RETURN;
         END
 
@@ -253,7 +235,7 @@ BEGIN
             SELECT * FROM [Customer] WHERE UserId = @UserId
         )
         BEGIN
-            RAISERROR('A user with this username already exists.', 16, 1);
+            RAISERROR('A user with this username does not exist.', 16, 1);
 			RETURN;
         END
 
