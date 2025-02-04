@@ -44,10 +44,12 @@ namespace GourmetShop.LoginForm
 
             bool passwordMatch = txtNewAdminPassword.Text == txtNewAdminConfirmPassword.Text;
 
+            bool isPhoneNumberValid = PhoneNumberValidator.IsValidPhoneNumber(txtNewAdminPhone.Text);
+
             lblAdminInvalidEmail.Visible = !isEmailValid;
             lblAdminPassMisMatch.Visible = !passwordMatch;
 
-            btnNewAdminCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch;
+            btnNewAdminCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch && isPhoneNumberValid;
         }
 
         private void picNewAdminPassword_Click(object sender, EventArgs e)

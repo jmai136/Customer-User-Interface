@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GourmetShop.LoginForm.Utils
@@ -10,6 +11,15 @@ namespace GourmetShop.LoginForm.Utils
     public static class LoginFormUtils
     {
         public static string _connectionString = ConfigurationManager.ConnectionStrings["GourmetShopConnectionString"].ConnectionString;
+    }
+
+    public static class PhoneNumberValidator
+    {
+        public static bool IsValidPhoneNumber(string phoneNum)
+        {
+            // https://regex101.com/r/wZ4uU6/2
+            return Regex.IsMatch(phoneNum, "(?:([+]\\d{1,4})[-.\\s]?)?(?:[(](\\d{1,3})[)][-.\\s]?)?(\\d{1,4})[-.\\s]?(\\d{1,4})[-.\\s]?(\\d{1,9})");
+        }
     }
 
     public static class EmailValidator

@@ -77,10 +77,12 @@ namespace GourmetShop.LoginForm
 
             bool passwordMatch = txtNewCustPassword.Text == txtNewCustConfirmPassword.Text;
 
+            bool isPhoneNumberValid = PhoneNumberValidator.IsValidPhoneNumber(txtNewCustPhone.Text);
+
             lblinvalidEmail.Visible = !isEmailValid;
             lblPassMisMatch.Visible= !passwordMatch;
 
-            btnNewCustCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch;
+            btnNewCustCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch && isPhoneNumberValid;
         }
 
         private void btnReturn_Click(object sender, EventArgs e)
