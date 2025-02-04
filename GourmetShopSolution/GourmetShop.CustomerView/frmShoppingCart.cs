@@ -110,7 +110,6 @@ namespace GourmetShop.CustomerView
 
         private void btnReturnHome_Click(object sender, EventArgs e)
         {
-            this.Owner.Show();
             this.Close();
         }
 
@@ -150,7 +149,6 @@ namespace GourmetShop.CustomerView
 
 
                 // FIXED: Open the Customer View form with the product list
-                this.Owner.Show();
                 this.Close();
             }
             catch (Exception ex)
@@ -245,7 +243,6 @@ namespace GourmetShop.CustomerView
         private void frmShoppingCart_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.Owner.Show();
-            this.Close();
         }
     }
 }
