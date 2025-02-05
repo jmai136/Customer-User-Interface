@@ -109,88 +109,8 @@ namespace GourmetShop.LoginForm
             this.Close();
         }
 
-        
-        private void btnNewCustCreateAccount_Click(object sender, EventArgs e)
-        {
-            lblAccountCreated.Visible = true;
-
-            // CHECKME: It will throw an error a second time if you try to register the same user information for phone number, first name, and last name
-            
-
-            User user = new User()
-            {
-                FirstName = txtNewCustFirstName.Text,
-                RoleId = 1,
-                LastName = txtNewCustLastName.Text,
-                Phone = txtNewCustPhone.Text,
-                City = txtNewCustCity.Text,
-                Country = txtNewCustCountry.Text
-            };
-
-           
-            Authentication authentication = new Authentication()
-            {
-                Username = txtNewCustUserName.Text,
-                Password = txtNewCustPassword.Text
-            };
-
-            try
-            {
-                int newCustomerId = _authService.Register(user, authentication);
-                SessionData.CurrentCustomerId = newCustomerId;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Unable to create account: {ex.Message}");
-            }
-        }
-
         private void cboAdmin_CheckedChanged(object sender, EventArgs e)
         {
-        }
-
-        private void btnNewAdmin_Click(object sender, EventArgs e)
-        {
-
-            User AdminUser = new User()
-            {
-                FirstName = txtNewCustFirstName.Text,
-                RoleId = 2,
-                LastName = txtNewCustLastName.Text,
-                Phone = txtNewCustPhone.Text,
-                City = txtNewCustCity.Text,
-                Country = txtNewCustCountry.Text
-            };
-
-            
-
-            Authentication authenticationAdmin = new Authentication()
-            {    
-                Username = txtNewCustUserName.Text,
-                Password = txtNewCustPassword.Text
-            };
-
-            try
-            {
-                int newAdminId = _authService.Register(AdminUser, authenticationAdmin);
-                lblAccountCreated.Visible = true;
-
-                //will not let you create an account if there is already a user with names and phone number
-                //in the database
-                var userRepo = new UserRepository(LoginFormUtils._connectionString);
-                if (userRepo.UserExists(AdminUser.FirstName, AdminUser.LastName, AdminUser.Phone))
-                {
-                    lblAccountCreated.Visible = true;
-                    lblAccountCreated.Text = "Account already exists";
-                }
-            }
-            catch (Exception ex)
-            {
-                
-                MessageBox.Show($"Unable to create account: {ex.Message}");
-            }
-
-            
         }
 
         private void btnCreateUser_Click(object sender, EventArgs e)
