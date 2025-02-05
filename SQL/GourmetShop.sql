@@ -1,5 +1,5 @@
-﻿USE master
-DROP DATABASE GourmetShop;
+﻿--USE master
+--DROP DATABASE GourmetShop;
 
 CREATE DATABASE GourmetShop
 GO

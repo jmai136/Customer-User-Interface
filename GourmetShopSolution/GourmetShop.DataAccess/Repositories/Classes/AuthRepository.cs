@@ -13,14 +13,17 @@ namespace GourmetShop.DataAccess.Repositories
 {
     public class AuthRepository : GourmetShopRepository, IAuthRepository
     {
+        private readonly UserRepository userRepo;
         public AuthRepository(string connectionString) : base(connectionString)
         {
+            userRepo = new UserRepository(connectionString);
         }
 
         public int Register(User user, Authentication authentication)
         {
             try
             {
+                
                 using (var conn = new SqlConnection(_connectionString))
                 using (var command = new SqlCommand("Register", conn)
                 {
@@ -138,7 +141,9 @@ namespace GourmetShop.DataAccess.Repositories
             }
         }
 
-       
+        
+
+
 
 
 
