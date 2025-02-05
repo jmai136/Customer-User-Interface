@@ -21,6 +21,22 @@ CREATE TABLE [User] (
 )
 go
 
+CREATE PROCEDURE CheckUserExists
+    @FirstName NVARCHAR(100),
+    @LastName NVARCHAR(100),
+    @Phone NVARCHAR(15)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT COUNT(*) 
+    FROM [User]
+    WHERE FirstName = @FirstName 
+    AND LastName = @LastName 
+    AND Phone = @Phone;
+END;
+GO
+
 CREATE PROCEDURE DeleteUser
     @UserId INT
 AS
@@ -567,25 +583,24 @@ BEGIN
         END
 
         -- Existing user data without an account check, phone number should be unique for every user then
-        IF NOT EXISTS (
+		-- CHECKME: Remove the check for role id if a user can only be a customer or admin
+		IF EXISTS (
 			SELECT 1
 			FROM [User]
-			WHERE Phone = @Phone AND FirstName = @FirstName AND LastName = @LastName
+			WHERE Phone = @Phone AND FirstName = @FirstName AND LastName = @LastName AND RoleId = @RoleId
 		)
-			BEGIN
-				-- Step 3: New User - Insert into Users table
-				INSERT INTO [User] (RoleId, FirstName, LastName, City, Country, Phone)
-				VALUES (@RoleId, @FirstName, @LastName, @City, @Country, @Phone);
+		BEGIN
+            RAISERROR('This user already exists.', 16, 1);
+			RETURN;
+        END
 
-				SET @UserId = SCOPE_IDENTITY(); -- Get the newly generated UserId
-			END
-		ELSE
-			BEGIN
-				-- Grab the already existing user
-				SELECT @UserId = Id
-				FROM [User]
-				WHERE Phone = @Phone;
-			END
+		BEGIN
+			-- Step 3: New User - Insert into Users table
+			INSERT INTO [User] (RoleId, FirstName, LastName, City, Country, Phone)
+			VALUES (@RoleId, @FirstName, @LastName, @City, @Country, @Phone);
+
+			SET @UserId = SCOPE_IDENTITY(); -- Get the newly generated UserId
+		END
 
 		IF @UserId IS NULL
 		BEGIN
@@ -643,7 +658,7 @@ BEGIN
 			END
 		END
 
-        -- Optional: Return the newly added or updated user Id
+        -- Should not be optional, we need this to pass into the various forms
         SELECT @UserId AS UserId;
     END TRY
     BEGIN CATCH

@@ -50,26 +50,5 @@ namespace GourmetShop.DataAccess.Repositories
                 throw; // Rethrow the exception to the calling code
             }
         }
-
-        public bool UserExists(string firstName, string lastName, string phone)
-        {
-            using (SqlConnection conn = new SqlConnection(_connectionString))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("CheckUserExists", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@FirstName", firstName);
-                    cmd.Parameters.AddWithValue("@LastName", lastName);
-                    cmd.Parameters.AddWithValue("@Phone", phone);
-
-                    int count = (int)cmd.ExecuteScalar();
-
-                    return count > 0;
-                }
-            }
-        }
-
     }
 }

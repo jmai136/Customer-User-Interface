@@ -36,7 +36,6 @@ namespace GourmetShop.LoginForm
                 box.TextChanged += (s, e) => ValidateForm();
             }
 
-            btnNewCustCreateAccount.Enabled = true;
             lblinvalidEmail.Visible = false;
             lblPassMisMatch.Visible = false;
         }
@@ -84,13 +83,29 @@ namespace GourmetShop.LoginForm
             lblPassMisMatch.Visible = !passwordMatch;
             lblInvalidPhoneNumber.Visible = !isPhoneNumberValid;
 
+            // TODO: Refactor this function to be in the UserRepository, not UserRepository
+            var userRepo = new UserRepository(LoginFormUtils._connectionString);
+            
+            if (allFilled && isEmailValid && passwordMatch && isPhoneNumberValid && !userRepo.UserExists(txtNewCustFirstName.Text, txtNewCustLastName.Text, txtNewCustPhone.Text))
+            {
+                btnCreateUser.Enabled = true;
+                lblAccountCreated.Visible = false;
+            }
+            else
+            {
+                btnCreateUser.Enabled = false;
+                lblAccountCreated.Visible = true;
+                lblAccountCreated.Text = "Account already exists";
+            }
+
+            /*
             btnNewCustCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch && isPhoneNumberValid;
             btnNewAdmin.Enabled = allFilled && isEmailValid && passwordMatch && !isPhoneNumberValid && cboAdmin.Checked;
+            */
         }
 
         private void btnReturn_Click(object sender, EventArgs e)
         {
-            this.Owner.Show();
             this.Close();
         }
 
@@ -119,34 +134,10 @@ namespace GourmetShop.LoginForm
                 Password = txtNewCustPassword.Text
             };
 
-
-            
-
             try
             {
-                //TODO I can't quite get this to work for this section, But I did get it to work for admin
-                //will not let you create an account if there is already a user with names and phone number
-                //in the database
-                //var userRepo = new CustomerRepository(LoginFormUtils._connectionString);
-                //if (userRepo.UserExists(user.FirstName, user.LastName, user.Phone))
-                //{
-                //    lblAccountCreated.Visible = true;
-                //    lblAccountCreated.Text = "Account already exists";
-                //    btnNewCustCreateAccount.Enabled = false;
-                //}
-                
-                    int newCustomerId = _authService.Register(user, authentication);
-                    SessionData.CurrentCustomerId = newCustomerId;
-                
-               
-                
-                
-                
-               
-                    
-                
-
-                
+                int newCustomerId = _authService.Register(user, authentication);
+                SessionData.CurrentCustomerId = newCustomerId;
             }
             catch (Exception ex)
             {
@@ -156,10 +147,6 @@ namespace GourmetShop.LoginForm
 
         private void cboAdmin_CheckedChanged(object sender, EventArgs e)
         {
-            btnNewCustCreateAccount.Enabled = false;
-            btnNewCustCreateAccount.Visible = false;
-            btnNewAdmin.Visible = true;
-            btnNewAdmin.Enabled = true;
         }
 
         private void btnNewAdmin_Click(object sender, EventArgs e)
@@ -178,24 +165,23 @@ namespace GourmetShop.LoginForm
             
 
             Authentication authenticationAdmin = new Authentication()
-            {
-                
+            {    
                 Username = txtNewCustUserName.Text,
                 Password = txtNewCustPassword.Text
             };
+
             try
             {
-                int newCustomerId = _authService.Register(AdminUser, authenticationAdmin);
+                int newAdminId = _authService.Register(AdminUser, authenticationAdmin);
                 lblAccountCreated.Visible = true;
 
                 //will not let you create an account if there is already a user with names and phone number
                 //in the database
-                var userRepo = new CustomerRepository(LoginFormUtils._connectionString);
+                var userRepo = new UserRepository(LoginFormUtils._connectionString);
                 if (userRepo.UserExists(AdminUser.FirstName, AdminUser.LastName, AdminUser.Phone))
                 {
                     lblAccountCreated.Visible = true;
                     lblAccountCreated.Text = "Account already exists";
-                    btnNewAdmin.Enabled = false;
                 }
             }
             catch (Exception ex)
@@ -206,8 +192,54 @@ namespace GourmetShop.LoginForm
 
             
         }
-       
-        
+
+        private void btnCreateUser_Click(object sender, EventArgs e)
+        {
+            User user = new User()
+            {
+                FirstName = txtNewCustFirstName.Text,
+                RoleId = (cboAdmin.Checked) ? 2 : 1,
+                LastName = txtNewCustLastName.Text,
+                Phone = txtNewCustPhone.Text,
+                City = txtNewCustCity.Text,
+                Country = txtNewCustCountry.Text
+            };
+
+            Authentication authenticationAdmin = new Authentication()
+            {
+                Username = txtNewCustUserName.Text,
+                Password = txtNewCustPassword.Text
+            };
+
+            try
+            {
+                int userId = _authService.Register(user, authenticationAdmin);
+
+                if (userId <= 0)
+                {
+                    throw new Exception("User account could not be created. Please try again.");
+                }
+
+                // CHECKME: Should be unnecessary because customer Id's assigned when the customer form's created
+                /*
+                if (userId != 1)
+                    return;
+
+                SessionData.CurrentCustomerId = userId;
+                */
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to create account: {ex.Message}");
+            }
+        }
+
+        private void frmNewUser_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Owner.Show();
+        }
+
+
 
 
         // Save the new customer ID in session so they can place an order immediately
