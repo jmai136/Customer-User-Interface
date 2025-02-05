@@ -1,6 +1,6 @@
 ﻿namespace GourmetShop.LoginForm
 {
-    partial class frmNewCustomer
+    partial class frmNewUser
     {
         /// <summary>
         /// Required designer variable.
@@ -44,13 +44,15 @@
             this.txtNewCustCity = new System.Windows.Forms.TextBox();
             this.txtNewCustCountry = new System.Windows.Forms.TextBox();
             this.txtNewCustPhone = new System.Windows.Forms.TextBox();
-            this.btnNewCustCreateAccount = new System.Windows.Forms.Button();
             this.lblinvalidEmail = new System.Windows.Forms.Label();
             this.lblPassMisMatch = new System.Windows.Forms.Label();
             this.btnReturn = new System.Windows.Forms.Button();
             this.picNewCustConfirmPassword = new System.Windows.Forms.PictureBox();
             this.picNewCustPassword = new System.Windows.Forms.PictureBox();
             this.lblAccountCreated = new System.Windows.Forms.Label();
+            this.cboAdmin = new System.Windows.Forms.CheckBox();
+            this.lblInvalidPhoneNumber = new System.Windows.Forms.Label();
+            this.btnCreateUser = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picNewCustConfirmPassword)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picNewCustPassword)).BeginInit();
             this.SuspendLayout();
@@ -217,18 +219,6 @@
             this.txtNewCustPhone.Size = new System.Drawing.Size(283, 23);
             this.txtNewCustPhone.TabIndex = 15;
             // 
-            // btnNewCustCreateAccount
-            // 
-            this.btnNewCustCreateAccount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNewCustCreateAccount.Location = new System.Drawing.Point(221, 313);
-            this.btnNewCustCreateAccount.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.btnNewCustCreateAccount.Name = "btnNewCustCreateAccount";
-            this.btnNewCustCreateAccount.Size = new System.Drawing.Size(124, 27);
-            this.btnNewCustCreateAccount.TabIndex = 16;
-            this.btnNewCustCreateAccount.Text = "Create Account";
-            this.btnNewCustCreateAccount.UseVisualStyleBackColor = true;
-            this.btnNewCustCreateAccount.Click += new System.EventHandler(this.btnNewCustCreateAccount_Click);
-            // 
             // lblinvalidEmail
             // 
             this.lblinvalidEmail.AutoSize = true;
@@ -297,18 +287,53 @@
             this.lblAccountCreated.Text = "Account Created! Return to Login";
             this.lblAccountCreated.Visible = false;
             // 
-            // frmNewCustomer
+            // cboAdmin
+            // 
+            this.cboAdmin.AutoSize = true;
+            this.cboAdmin.Location = new System.Drawing.Point(81, 322);
+            this.cboAdmin.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cboAdmin.Name = "cboAdmin";
+            this.cboAdmin.Size = new System.Drawing.Size(93, 17);
+            this.cboAdmin.TabIndex = 23;
+            this.cboAdmin.Text = "I am an Admin";
+            this.cboAdmin.UseVisualStyleBackColor = true;
+            this.cboAdmin.CheckedChanged += new System.EventHandler(this.cboAdmin_CheckedChanged);
+            // 
+            // lblInvalidPhoneNumber
+            // 
+            this.lblInvalidPhoneNumber.AutoSize = true;
+            this.lblInvalidPhoneNumber.Location = new System.Drawing.Point(441, 280);
+            this.lblInvalidPhoneNumber.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblInvalidPhoneNumber.Name = "lblInvalidPhoneNumber";
+            this.lblInvalidPhoneNumber.Size = new System.Drawing.Size(112, 13);
+            this.lblInvalidPhoneNumber.TabIndex = 24;
+            this.lblInvalidPhoneNumber.Text = "Invalid Phone Number";
+            this.lblInvalidPhoneNumber.Visible = false;
+            // 
+            // btnCreateUser
+            // 
+            this.btnCreateUser.Location = new System.Drawing.Point(255, 313);
+            this.btnCreateUser.Name = "btnCreateUser";
+            this.btnCreateUser.Size = new System.Drawing.Size(75, 23);
+            this.btnCreateUser.TabIndex = 26;
+            this.btnCreateUser.Text = "CREATE";
+            this.btnCreateUser.UseVisualStyleBackColor = true;
+            this.btnCreateUser.Click += new System.EventHandler(this.btnCreateUser_Click);
+            // 
+            // frmNewUser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(600, 375);
+            this.Controls.Add(this.btnCreateUser);
+            this.Controls.Add(this.lblInvalidPhoneNumber);
+            this.Controls.Add(this.cboAdmin);
             this.Controls.Add(this.lblAccountCreated);
             this.Controls.Add(this.btnReturn);
             this.Controls.Add(this.lblPassMisMatch);
             this.Controls.Add(this.lblinvalidEmail);
             this.Controls.Add(this.picNewCustConfirmPassword);
             this.Controls.Add(this.picNewCustPassword);
-            this.Controls.Add(this.btnNewCustCreateAccount);
             this.Controls.Add(this.txtNewCustPhone);
             this.Controls.Add(this.txtNewCustCountry);
             this.Controls.Add(this.txtNewCustCity);
@@ -326,8 +351,9 @@
             this.Controls.Add(this.txtNewCustUserName);
             this.Controls.Add(this.lblNewCustUserName);
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.Name = "frmNewCustomer";
-            this.Text = "New Customer";
+            this.Name = "frmNewUser";
+            this.Text = "New User Registration";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmNewUser_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.picNewCustConfirmPassword)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picNewCustPassword)).EndInit();
             this.ResumeLayout(false);
@@ -353,12 +379,14 @@
         private System.Windows.Forms.TextBox txtNewCustCity;
         private System.Windows.Forms.TextBox txtNewCustCountry;
         private System.Windows.Forms.TextBox txtNewCustPhone;
-        private System.Windows.Forms.Button btnNewCustCreateAccount;
         private System.Windows.Forms.PictureBox picNewCustPassword;
         private System.Windows.Forms.PictureBox picNewCustConfirmPassword;
         private System.Windows.Forms.Label lblinvalidEmail;
         private System.Windows.Forms.Label lblPassMisMatch;
         private System.Windows.Forms.Button btnReturn;
         private System.Windows.Forms.Label lblAccountCreated;
+        private System.Windows.Forms.CheckBox cboAdmin;
+        private System.Windows.Forms.Label lblInvalidPhoneNumber;
+        private System.Windows.Forms.Button btnCreateUser;
     }
 }

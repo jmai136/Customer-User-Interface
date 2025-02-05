@@ -36,16 +36,13 @@
             this.lblReturningCustomers = new System.Windows.Forms.Label();
             this.lblNewCustomer = new System.Windows.Forms.Label();
             this.btnNewCustomer = new System.Windows.Forms.Button();
-            this.chkAdmin = new System.Windows.Forms.CheckBox();
+            this.picCustPassword = new System.Windows.Forms.PictureBox();
             this.lblAdminUserName = new System.Windows.Forms.Label();
             this.txtAdminUsername = new System.Windows.Forms.TextBox();
             this.lblAdminPassword = new System.Windows.Forms.Label();
             this.txtAdminPassword = new System.Windows.Forms.TextBox();
             this.btnAdminLogin = new System.Windows.Forms.Button();
-            this.picCustPassword = new System.Windows.Forms.PictureBox();
             this.picAdminPassword = new System.Windows.Forms.PictureBox();
-            this.btnExit = new System.Windows.Forms.Button();
-            this.btnNewAdmin = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picCustPassword)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picAdminPassword)).BeginInit();
             this.SuspendLayout();
@@ -91,7 +88,7 @@
             // 
             this.btnCustLogin.Enabled = false;
             this.btnCustLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCustLogin.Location = new System.Drawing.Point(357, 178);
+            this.btnCustLogin.Location = new System.Drawing.Point(341, 179);
             this.btnCustLogin.Name = "btnCustLogin";
             this.btnCustLogin.Size = new System.Drawing.Size(117, 42);
             this.btnCustLogin.TabIndex = 4;
@@ -126,20 +123,19 @@
             this.btnNewCustomer.Name = "btnNewCustomer";
             this.btnNewCustomer.Size = new System.Drawing.Size(202, 37);
             this.btnNewCustomer.TabIndex = 7;
-            this.btnNewCustomer.Text = "New Customer";
+            this.btnNewCustomer.Text = "New User";
             this.btnNewCustomer.UseVisualStyleBackColor = true;
             this.btnNewCustomer.Click += new System.EventHandler(this.btnNewCustomer_Click);
             // 
-            // chkAdmin
+            // picCustPassword
             // 
-            this.chkAdmin.AutoSize = true;
-            this.chkAdmin.Location = new System.Drawing.Point(12, 462);
-            this.chkAdmin.Name = "chkAdmin";
-            this.chkAdmin.Size = new System.Drawing.Size(113, 20);
-            this.chkAdmin.TabIndex = 8;
-            this.chkAdmin.Text = "I am an Admin";
-            this.chkAdmin.UseVisualStyleBackColor = true;
-            this.chkAdmin.CheckedChanged += new System.EventHandler(this.chkAdmin_CheckedChanged);
+            this.picCustPassword.Image = global::GourmetShop.LoginForm.Properties.Resources.eyeClosed;
+            this.picCustPassword.Location = new System.Drawing.Point(579, 130);
+            this.picCustPassword.Name = "picCustPassword";
+            this.picCustPassword.Size = new System.Drawing.Size(33, 29);
+            this.picCustPassword.TabIndex = 14;
+            this.picCustPassword.TabStop = false;
+            this.picCustPassword.Click += new System.EventHandler(this.picCustPassword_Click);
             // 
             // lblAdminUserName
             // 
@@ -150,7 +146,6 @@
             this.lblAdminUserName.Size = new System.Drawing.Size(108, 25);
             this.lblAdminUserName.TabIndex = 9;
             this.lblAdminUserName.Text = "Username:";
-            this.lblAdminUserName.Visible = false;
             // 
             // txtAdminUsername
             // 
@@ -158,7 +153,6 @@
             this.txtAdminUsername.Name = "txtAdminUsername";
             this.txtAdminUsername.Size = new System.Drawing.Size(282, 22);
             this.txtAdminUsername.TabIndex = 10;
-            this.txtAdminUsername.Visible = false;
             this.txtAdminUsername.TextChanged += new System.EventHandler(this.txtAdminUsername_TextChanged);
             // 
             // lblAdminPassword
@@ -170,7 +164,6 @@
             this.lblAdminPassword.Size = new System.Drawing.Size(104, 25);
             this.lblAdminPassword.TabIndex = 11;
             this.lblAdminPassword.Text = "Password:";
-            this.lblAdminPassword.Visible = false;
             // 
             // txtAdminPassword
             // 
@@ -179,70 +172,35 @@
             this.txtAdminPassword.PasswordChar = '*';
             this.txtAdminPassword.Size = new System.Drawing.Size(282, 22);
             this.txtAdminPassword.TabIndex = 12;
-            this.txtAdminPassword.Visible = false;
             this.txtAdminPassword.TextChanged += new System.EventHandler(this.txtAdminPassword_TextChanged);
             // 
             // btnAdminLogin
             // 
             this.btnAdminLogin.Enabled = false;
             this.btnAdminLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAdminLogin.Location = new System.Drawing.Point(267, 440);
+            this.btnAdminLogin.Location = new System.Drawing.Point(341, 440);
             this.btnAdminLogin.Name = "btnAdminLogin";
-            this.btnAdminLogin.Size = new System.Drawing.Size(117, 42);
+            this.btnAdminLogin.Size = new System.Drawing.Size(178, 42);
             this.btnAdminLogin.TabIndex = 13;
-            this.btnAdminLogin.Text = "Login";
+            this.btnAdminLogin.Text = "Admin Login";
             this.btnAdminLogin.UseVisualStyleBackColor = true;
-            this.btnAdminLogin.Visible = false;
             this.btnAdminLogin.Click += new System.EventHandler(this.btnAdminLogin_Click);
-            // 
-            // picCustPassword
-            // 
-            this.picCustPassword.Location = new System.Drawing.Point(579, 130);
-            this.picCustPassword.Name = "picCustPassword";
-            this.picCustPassword.Size = new System.Drawing.Size(33, 29);
-            this.picCustPassword.TabIndex = 14;
-            this.picCustPassword.TabStop = false;
-            this.picCustPassword.Click += new System.EventHandler(this.picCustPassword_Click);
             // 
             // picAdminPassword
             // 
+            this.picAdminPassword.Image = global::GourmetShop.LoginForm.Properties.Resources.eyeClosed;
             this.picAdminPassword.Location = new System.Drawing.Point(579, 405);
             this.picAdminPassword.Name = "picAdminPassword";
             this.picAdminPassword.Size = new System.Drawing.Size(33, 29);
             this.picAdminPassword.TabIndex = 15;
             this.picAdminPassword.TabStop = false;
-            this.picAdminPassword.Visible = false;
             this.picAdminPassword.Click += new System.EventHandler(this.picAdminPassword_Click);
-            // 
-            // btnExit
-            // 
-            this.btnExit.Location = new System.Drawing.Point(691, 458);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(75, 23);
-            this.btnExit.TabIndex = 16;
-            this.btnExit.Text = "Exit";
-            this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
-            // 
-            // btnNewAdmin
-            // 
-            this.btnNewAdmin.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNewAdmin.Location = new System.Drawing.Point(418, 440);
-            this.btnNewAdmin.Name = "btnNewAdmin";
-            this.btnNewAdmin.Size = new System.Drawing.Size(155, 41);
-            this.btnNewAdmin.TabIndex = 17;
-            this.btnNewAdmin.Text = "New Admin";
-            this.btnNewAdmin.UseVisualStyleBackColor = true;
-            this.btnNewAdmin.Visible = false;
-            this.btnNewAdmin.Click += new System.EventHandler(this.btnNewAdmin_Click);
             // 
             // frmLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 494);
-            this.Controls.Add(this.btnNewAdmin);
-            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.picAdminPassword);
             this.Controls.Add(this.picCustPassword);
             this.Controls.Add(this.btnAdminLogin);
@@ -250,7 +208,6 @@
             this.Controls.Add(this.lblAdminPassword);
             this.Controls.Add(this.txtAdminUsername);
             this.Controls.Add(this.lblAdminUserName);
-            this.Controls.Add(this.chkAdmin);
             this.Controls.Add(this.btnNewCustomer);
             this.Controls.Add(this.lblNewCustomer);
             this.Controls.Add(this.lblReturningCustomers);
@@ -279,16 +236,13 @@
         private System.Windows.Forms.Label lblReturningCustomers;
         private System.Windows.Forms.Label lblNewCustomer;
         private System.Windows.Forms.Button btnNewCustomer;
-        private System.Windows.Forms.CheckBox chkAdmin;
+        private System.Windows.Forms.PictureBox picCustPassword;
         private System.Windows.Forms.Label lblAdminUserName;
         private System.Windows.Forms.TextBox txtAdminUsername;
         private System.Windows.Forms.Label lblAdminPassword;
         private System.Windows.Forms.TextBox txtAdminPassword;
         private System.Windows.Forms.Button btnAdminLogin;
-        private System.Windows.Forms.PictureBox picCustPassword;
         private System.Windows.Forms.PictureBox picAdminPassword;
-        private System.Windows.Forms.Button btnExit;
-        private System.Windows.Forms.Button btnNewAdmin;
     }
 }
 

@@ -1,7 +1,6 @@
 ﻿using GourmetShop.CustomerView;
 using GourmetShop.DataAccess.Entities;
 using GourmetShop.DataAccess.Repositories;
-using GourmetShop.DataAccess.Repositories;
 using GourmetShop.DataAccess.Repositories.Interfaces.CRUD_Subinterfaces;
 using GourmetShop.DataAccess.Services;
 using GourmetShop.LoginForm.Utils;
@@ -52,47 +51,14 @@ namespace GourmetShop.LoginForm
         {
             this.Hide();
 
-            frmNewCustomer newCustomer = new frmNewCustomer();
+            frmNewUser newCustomer = new frmNewUser();
             newCustomer.Owner = this;
             newCustomer.Show();
         }
 
-        private void btnNewAdmin_Click(object sender, EventArgs e)
-        {
-            this.Hide();
+       
 
-            frmNewAdmin newAdmin = new frmNewAdmin();
-            newAdmin.Owner = this;
-            newAdmin.Show();
-        }
-
-        private void chkAdmin_CheckedChanged(object sender, EventArgs e)
-        {
-            lblAdminPassword.Visible = chkAdmin.Checked;
-            lblAdminUserName.Visible = chkAdmin.Checked;
-            txtAdminPassword.Visible = chkAdmin.Checked;
-            txtAdminUsername.Visible = chkAdmin.Checked;
-            btnAdminLogin.Visible = chkAdmin.Checked;
-            btnNewAdmin.Visible = chkAdmin.Checked;
-            picAdminPassword.Visible = chkAdmin.Checked;
-            picAdminPassword.Image = Properties.Resources.eyeClosed;
-
-        }
-
-        
-        private void txtAdminUsername_TextChanged(object sender, EventArgs e)
-        {
-            btnAdminLogin.Enabled = btnCustLogin.Enabled = !string.IsNullOrWhiteSpace(txtAdminUsername.Text) &&
-                                   !string.IsNullOrWhiteSpace(txtAdminPassword.Text);
-        }
-        
-        private void txtAdminPassword_TextChanged(object sender, EventArgs e)
-        {
-            btnAdminLogin.Enabled = !string.IsNullOrWhiteSpace(txtAdminUsername.Text) &&
-                                   !string.IsNullOrWhiteSpace(txtAdminPassword.Text);
-        }
-
-        private void picCustPassword_Click(object sender, EventArgs e)
+       private void picCustPassword_Click(object sender, EventArgs e)
         {
             if (txtCustPassword.PasswordChar == '*')
             {
@@ -106,19 +72,7 @@ namespace GourmetShop.LoginForm
             }
         }
 
-        private void picAdminPassword_Click(object sender, EventArgs e)
-        {
-            if (txtAdminPassword.PasswordChar == '*')
-            {
-                txtAdminPassword.PasswordChar = '\0';
-                picAdminPassword.Image = Properties.Resources.eyeOpen;
-            }
-            else
-            {
-                txtAdminPassword.PasswordChar = '*';
-                picAdminPassword.Image = Properties.Resources.eyeClosed;
-            }
-        }
+        
 
         private void btnCustLogin_Click(object sender, EventArgs e)
         {
@@ -156,7 +110,7 @@ namespace GourmetShop.LoginForm
             }
         }
 
-        //TODO use this button to actually log in an admin and take them to the admin view
+       
         private void btnAdminLogin_Click(object sender, EventArgs e)
         {
             Authentication authentication = new Authentication()
@@ -189,6 +143,32 @@ namespace GourmetShop.LoginForm
         private void frmLogin_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void txtAdminUsername_TextChanged(object sender, EventArgs e)
+        {
+            btnAdminLogin.Enabled = !string.IsNullOrWhiteSpace(txtAdminUsername.Text) &&
+                                   !string.IsNullOrWhiteSpace(txtAdminPassword.Text);
+        }
+
+        private void txtAdminPassword_TextChanged(object sender, EventArgs e)
+        {
+            btnAdminLogin.Enabled = !string.IsNullOrWhiteSpace(txtAdminUsername.Text) &&
+                                   !string.IsNullOrWhiteSpace(txtAdminPassword.Text);
+        }
+
+        private void picAdminPassword_Click(object sender, EventArgs e)
+        {
+            if(txtCustPassword.PasswordChar == '*')
+            {
+                txtAdminPassword.PasswordChar = '\0';
+                picAdminPassword.Image = Properties.Resources.eyeOpen;
+            }
+            else
+            {
+                txtAdminPassword.PasswordChar = '*';
+                picAdminPassword.Image = Properties.Resources.eyeClosed;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GourmetShop.DataAccess.Entities;
+using GourmetShop.DataAccess.Repositories;
 using GourmetShop.DataAccess.Services;
 using GourmetShop.LoginForm.Utils;
 using System;
@@ -14,13 +15,13 @@ using System.Windows.Forms;
 
 namespace GourmetShop.LoginForm
 {
-    public partial class frmNewCustomer : Form
+    public partial class frmNewUser : Form
     {
         AuthService _authService = new AuthService(LoginFormUtils._connectionString);
 
         private TextBox[] newCustTextBoxes;
 
-        public frmNewCustomer()
+        public frmNewUser()
         {
             InitializeComponent();
 
@@ -30,12 +31,11 @@ namespace GourmetShop.LoginForm
 
             //subscribing to all the textBoxes at once
             //using the => so I don't have to write a seperate function
-            foreach(TextBox box in newCustTextBoxes)
+            foreach (TextBox box in newCustTextBoxes)
             {
                 box.TextChanged += (s, e) => ValidateForm();
             }
 
-            btnNewCustCreateAccount.Enabled = true;
             lblinvalidEmail.Visible = false;
             lblPassMisMatch.Visible = false;
         }
@@ -80,51 +80,94 @@ namespace GourmetShop.LoginForm
             bool isPhoneNumberValid = PhoneNumberValidator.IsValidPhoneNumber(txtNewCustPhone.Text);
 
             lblinvalidEmail.Visible = !isEmailValid;
-            lblPassMisMatch.Visible= !passwordMatch;
+            lblPassMisMatch.Visible = !passwordMatch;
+            lblInvalidPhoneNumber.Visible = !isPhoneNumberValid;
 
+            // TODO: Refactor this function to be in the UserRepository, not UserRepository
+            var userRepo = new UserRepository(LoginFormUtils._connectionString);
+            
+            if (allFilled && isEmailValid && passwordMatch && isPhoneNumberValid && !userRepo.UserExists(txtNewCustFirstName.Text, txtNewCustLastName.Text, txtNewCustPhone.Text))
+            {
+                btnCreateUser.Enabled = true;
+                lblAccountCreated.Visible = false;
+            }
+            else
+            {
+                btnCreateUser.Enabled = false;
+                lblAccountCreated.Visible = true;
+                lblAccountCreated.Text = "Account already exists";
+            }
+
+            /*
             btnNewCustCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch && isPhoneNumberValid;
+            btnNewAdmin.Enabled = allFilled && isEmailValid && passwordMatch && !isPhoneNumberValid && cboAdmin.Checked;
+            */
         }
 
         private void btnReturn_Click(object sender, EventArgs e)
         {
-            this.Owner.Show();
             this.Close();
         }
 
-        //TODO Actually put in logic to verify account was created and then have the label show up.
-        private void btnNewCustCreateAccount_Click(object sender, EventArgs e)
+        private void cboAdmin_CheckedChanged(object sender, EventArgs e)
         {
-            lblAccountCreated.Visible = true;
+        }
 
-            // CHECKME: It will throw an error a second time if you try to register the same user information for phone number, first name, and last name
+        private void btnCreateUser_Click(object sender, EventArgs e)
+        {
             User user = new User()
             {
                 FirstName = txtNewCustFirstName.Text,
-                RoleId = 1,
+                RoleId = (cboAdmin.Checked) ? 2 : 1,
                 LastName = txtNewCustLastName.Text,
                 Phone = txtNewCustPhone.Text,
                 City = txtNewCustCity.Text,
                 Country = txtNewCustCountry.Text
             };
 
-            Authentication authentication = new Authentication()
+            Authentication authenticationAdmin = new Authentication()
             {
                 Username = txtNewCustUserName.Text,
                 Password = txtNewCustPassword.Text
             };
 
-            // Save the new customer ID in session so they can place an order immediately
-
             try
             {
-                int newCustomerId = _authService.Register(user, authentication);
+                int userId = _authService.Register(user, authenticationAdmin);
 
-                SessionData.CurrentCustomerId = newCustomerId;
+                if (userId <= 0)
+                {
+                    throw new Exception("User account could not be created. Please try again.");
+                }
+
+                // CHECKME: Should be unnecessary because customer Id's assigned when the customer form's created
+                /*
+                if (userId != 1)
+                    return;
+
+                SessionData.CurrentCustomerId = userId;
+                */
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Unable to create account: {ex.Message}");
             }
         }
+
+        private void frmNewUser_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.Owner.Show();
+        }
+
+
+
+
+        // Save the new customer ID in session so they can place an order immediately
+
+
     }
+
+        
 }
+   
+
