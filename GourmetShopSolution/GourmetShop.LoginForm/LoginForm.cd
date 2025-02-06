@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GourmetShop.LoginForm.frmNewAdmin" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAIAgAAEGAgAAQACADgIBAqRgiCAFkAUAAAoAAIAAA=</HashCode>
+      <FileName>frmNewAdmin.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.LoginForm.frmNewUser" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QIREBADAECBgpQCAABCAAAsiEAAAAAIKIAACIIQAEAQ=</HashCode>
+      <FileName>frmNewUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.LoginForm.frmLogin" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAgAEDAAgQgAABCAEkAiAASAkAAECEAFQCEAREE=</HashCode>
+      <FileName>LoginForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.LoginForm.Program" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.LoginForm.Properties.Resources" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAIAAAAABEAAAAQAIAAAAAABgAAAABIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.LoginForm.Properties.Settings" Collapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.LoginForm.Utils.LoginFormUtils" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Utils\LoginFormUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.LoginForm.Utils.PhoneNumberValidator" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Utils\LoginFormUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.LoginForm.Utils.EmailValidator" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAgAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Utils\LoginFormUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
