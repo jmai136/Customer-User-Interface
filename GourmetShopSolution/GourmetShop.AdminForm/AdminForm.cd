@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GourmetShop.WinForms.Forms.frmProducts" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAACAAKCkBIAAAiACAAACKAAIAAAAEQAAQAAACSAQ=</HashCode>
+      <FileName>Forms\frmProducts.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.WinForms.Forms.frmSuppliers" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAwAAwAACKAAaAAAAACAIAAGEEAAAAAAAAAEMAACAAA=</HashCode>
+      <FileName>Forms\frmSuppliers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.WinForms.Forms.Subforms.Products.frmAddProduct" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAICABAAAAAACAIgAqAAIhAEAEAAACAAAAAAA=</HashCode>
+      <FileName>Forms\Subforms\Products\frmAddProduct.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.WinForms.Forms.Subforms.Suppliers.frmAddSupplier" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgIIIAACCECAAAACAKAIAAGggAAAgAAAAACAABAAAA=</HashCode>
+      <FileName>Forms\Subforms\Suppliers\frmAddSupplier.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.WinForms.frmAdminMain" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgiCAQiAACAAAQgAACGAGBACggkAAACAQABAAAAAIQA=</HashCode>
+      <FileName>frmAdminMain.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.WinForms.Program" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.WinForms.Properties.Resources" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.WinForms.Properties.Settings" Collapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.WinForms.Utils.GourmetShopUtils" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Utils\GourmetShopUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.WinForms.Utils.GourmetShopStringUtils" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAABAAQAAAAAAAAAA=</HashCode>
+      <FileName>Utils\GourmetShopUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GourmetShop.WinForms.Utils.GourmetShopValidators" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Utils\GourmetShopUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
