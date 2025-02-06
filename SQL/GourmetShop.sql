@@ -587,7 +587,7 @@ BEGIN
 		IF EXISTS (
 			SELECT 1
 			FROM [User]
-			WHERE Phone = @Phone AND FirstName = @FirstName AND LastName = @LastName AND RoleId = @RoleId
+			WHERE Phone = @Phone AND FirstName = @FirstName AND LastName = @LastName
 		)
 		BEGIN
             RAISERROR('This user already exists.', 16, 1);

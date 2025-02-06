@@ -38,6 +38,8 @@ namespace GourmetShop.LoginForm
 
             lblinvalidEmail.Visible = false;
             lblPassMisMatch.Visible = false;
+            btnCreateUser.Enabled = false;
+            lblAccountCreated.Visible = false;
         }
 
         private void picNewCustPassword_Click(object sender, EventArgs e)
@@ -91,17 +93,17 @@ namespace GourmetShop.LoginForm
                 btnCreateUser.Enabled = true;
                 lblAccountCreated.Visible = false;
             }
-            else
+            else if(allFilled && isEmailValid && passwordMatch && isPhoneNumberValid && userRepo.UserExists(txtNewCustFirstName.Text, txtNewCustLastName.Text, txtNewCustPhone.Text))
             {
                 btnCreateUser.Enabled = false;
                 lblAccountCreated.Visible = true;
                 lblAccountCreated.Text = "Account already exists";
             }
-
-            /*
-            btnNewCustCreateAccount.Enabled = allFilled && isEmailValid && passwordMatch && isPhoneNumberValid;
-            btnNewAdmin.Enabled = allFilled && isEmailValid && passwordMatch && !isPhoneNumberValid && cboAdmin.Checked;
-            */
+            else
+            {
+                btnCreateUser.Enabled = false;
+                lblAccountCreated.Visible = false;
+            }
         }
 
         private void btnReturn_Click(object sender, EventArgs e)
@@ -139,7 +141,8 @@ namespace GourmetShop.LoginForm
                 {
                     throw new Exception("User account could not be created. Please try again.");
                 }
-
+                lblAccountCreated.Text = "Account successfully created! Return to login";
+                lblAccountCreated.Visible = true;
                 // CHECKME: Should be unnecessary because customer Id's assigned when the customer form's created
                 /*
                 if (userId != 1)
