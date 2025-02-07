@@ -30,10 +30,6 @@ namespace GourmetShop.CustomerView
             {
                 SessionData.CurrentCartId = cartId;
             }
-            else
-            {
-                MessageBox.Show("Your cart is empty. Please add products first.", "Cart Empty", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
 
             LoadShoppingCart();
 
