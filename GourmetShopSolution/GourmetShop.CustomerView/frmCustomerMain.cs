@@ -20,10 +20,12 @@ namespace GourmetShop.CustomerView
 
         private ProductRepository productRepository = new ProductRepository(connectionString);
         private SupplierRepository supplierRepository = new SupplierRepository(connectionString);
+        private UserRepository userRepository = new UserRepository(connectionString);
         private CustomerRepository _customerRepository = new CustomerRepository(connectionString);
         private ShoppingCartRepository _shoppingcartRepository = new ShoppingCartRepository(connectionString);
 
         Customer customer = new Customer();
+
         public frmCustomerMain()
         {
             InitializeComponent();
@@ -35,10 +37,11 @@ namespace GourmetShop.CustomerView
 
         public frmCustomerMain(int userId) : this()
         {
-            // TODO: Use the customer's ID to fetch the customer's data which you can then do stuff with it
             customer = _customerRepository.GetByUserId(userId);
+            User user = userRepository.GetByUserId(userId);
 
-            MessageBox.Show($"Welcome, {customer.Id}!");
+            // FIXED: Show the customer name instead of the ID
+            MessageBox.Show($"Welcome, {user.FirstName} {user.LastName}!");
         }
 
 

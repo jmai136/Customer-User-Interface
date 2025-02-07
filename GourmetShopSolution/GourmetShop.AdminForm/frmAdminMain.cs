@@ -20,6 +20,7 @@ namespace GourmetShop.WinForms
         public static string connectionString = ConfigurationManager.ConnectionStrings["GourmetShopConnectionString"].ConnectionString;
         private AdminRepository _adminRepository = new AdminRepository(connectionString);
         private ProductRepository productRepository = new ProductRepository(connectionString);
+        private UserRepository userRepository = new UserRepository(connectionString);
 
         public Admin admin;
 
@@ -33,10 +34,10 @@ namespace GourmetShop.WinForms
         // Assign the admin's ID to the form to be used in other forms
         public frmAdminMain(int userId): this()
         {
-            // Use the admin's ID to fetch the admin's data which you can then do stuff with it
             admin = _adminRepository.GetByUserId(userId);
+            User user = userRepository.GetByUserId(userId);
 
-            MessageBox.Show($"Welcome, {admin.Id}!");
+            MessageBox.Show($"Welcome, {user.FirstName} {user.LastName}!");
         }
 
         private void vts_mi_ViewProducts_Click(object sender, EventArgs e)
