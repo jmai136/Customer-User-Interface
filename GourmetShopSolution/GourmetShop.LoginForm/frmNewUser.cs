@@ -26,8 +26,8 @@ namespace GourmetShop.LoginForm
             InitializeComponent();
 
             newCustTextBoxes = new TextBox[]
-                {txtNewCustUserName, txtNewCustPassword, txtNewCustConfirmPassword, txtNewCustFirstName,
-                txtNewCustLastName, txtNewCustCity, txtNewCustCountry, txtNewCustPhone };
+                {txtNewUserName, txtNewPassword, txtNewConfirmPassword, txtNewFirstName,
+                txtNewtLastName, txtNewCity, txtNewCountry, txtNewPhone };
 
             //subscribing to all the textBoxes at once
             //using the => so I don't have to write a seperate function
@@ -44,28 +44,28 @@ namespace GourmetShop.LoginForm
 
         private void picNewCustPassword_Click(object sender, EventArgs e)
         {
-            if (txtNewCustPassword.PasswordChar == '*')
+            if (txtNewPassword.PasswordChar == '*')
             {
-                txtNewCustPassword.PasswordChar = '\0';
+                txtNewPassword.PasswordChar = '\0';
                 picNewCustPassword.Image = Properties.Resources.eyeOpen;
             }
             else
             {
-                txtNewCustPassword.PasswordChar = '*';
+                txtNewPassword.PasswordChar = '*';
                 picNewCustPassword.Image = Properties.Resources.eyeClosed;
             }
         }
 
         private void picNewCustConfirmPassword_Click(object sender, EventArgs e)
         {
-            if (txtNewCustConfirmPassword.PasswordChar == '*')
+            if (txtNewConfirmPassword.PasswordChar == '*')
             {
-                txtNewCustConfirmPassword.PasswordChar = '\0';
+                txtNewConfirmPassword.PasswordChar = '\0';
                 picNewCustConfirmPassword.Image = Properties.Resources.eyeOpen;
             }
             else
             {
-                txtNewCustConfirmPassword.PasswordChar = '*';
+                txtNewConfirmPassword.PasswordChar = '*';
                 picNewCustConfirmPassword.Image = Properties.Resources.eyeClosed;
             }
         }
@@ -75,11 +75,11 @@ namespace GourmetShop.LoginForm
             bool allFilled = newCustTextBoxes.All
                     (box => !string.IsNullOrWhiteSpace(box.Text));
 
-            bool isEmailValid = EmailValidator.IsValidEmail(txtNewCustUserName.Text);
+            bool isEmailValid = EmailValidator.IsValidEmail(txtNewUserName.Text);
 
-            bool passwordMatch = txtNewCustPassword.Text == txtNewCustConfirmPassword.Text;
+            bool passwordMatch = txtNewPassword.Text == txtNewConfirmPassword.Text;
 
-            bool isPhoneNumberValid = PhoneNumberValidator.IsValidPhoneNumber(txtNewCustPhone.Text);
+            bool isPhoneNumberValid = PhoneNumberValidator.IsValidPhoneNumber(txtNewPhone.Text);
 
             lblinvalidEmail.Visible = !isEmailValid;
             lblPassMisMatch.Visible = !passwordMatch;
@@ -88,12 +88,12 @@ namespace GourmetShop.LoginForm
             // TODO: Refactor this function to be in the UserRepository, not UserRepository
             var userRepo = new UserRepository(LoginFormUtils._connectionString);
             
-            if (allFilled && isEmailValid && passwordMatch && isPhoneNumberValid && !userRepo.UserExists(txtNewCustFirstName.Text, txtNewCustLastName.Text, txtNewCustPhone.Text))
+            if (allFilled && isEmailValid && passwordMatch && isPhoneNumberValid && !userRepo.UserExists(txtNewFirstName.Text, txtNewtLastName.Text, txtNewPhone.Text))
             {
                 btnCreateUser.Enabled = true;
                 lblAccountCreated.Visible = false;
             }
-            else if(allFilled && isEmailValid && passwordMatch && isPhoneNumberValid && userRepo.UserExists(txtNewCustFirstName.Text, txtNewCustLastName.Text, txtNewCustPhone.Text))
+            else if(allFilled && isEmailValid && passwordMatch && isPhoneNumberValid && userRepo.UserExists(txtNewFirstName.Text, txtNewtLastName.Text, txtNewPhone.Text))
             {
                 btnCreateUser.Enabled = false;
                 lblAccountCreated.Visible = true;
@@ -119,18 +119,18 @@ namespace GourmetShop.LoginForm
         {
             User user = new User()
             {
-                FirstName = txtNewCustFirstName.Text,
+                FirstName = txtNewFirstName.Text,
                 RoleId = (cboAdmin.Checked) ? 2 : 1,
-                LastName = txtNewCustLastName.Text,
-                Phone = txtNewCustPhone.Text,
-                City = txtNewCustCity.Text,
-                Country = txtNewCustCountry.Text
+                LastName = txtNewtLastName.Text,
+                Phone = txtNewPhone.Text,
+                City = txtNewCity.Text,
+                Country = txtNewCountry.Text
             };
 
             Authentication authenticationAdmin = new Authentication()
             {
-                Username = txtNewCustUserName.Text,
-                Password = txtNewCustPassword.Text
+                Username = txtNewUserName.Text,
+                Password = txtNewPassword.Text
             };
 
             try

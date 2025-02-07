@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.lblNewCustUserName = new System.Windows.Forms.Label();
-            this.txtNewCustUserName = new System.Windows.Forms.TextBox();
+            this.txtNewUserName = new System.Windows.Forms.TextBox();
             this.lblNewCustConfirmPassword = new System.Windows.Forms.Label();
             this.lblNewCustPassword = new System.Windows.Forms.Label();
             this.lblNewCustFirstName = new System.Windows.Forms.Label();
@@ -37,13 +37,13 @@
             this.lblNewCustCity = new System.Windows.Forms.Label();
             this.lblNewCustCountry = new System.Windows.Forms.Label();
             this.lblNewCustPhone = new System.Windows.Forms.Label();
-            this.txtNewCustPassword = new System.Windows.Forms.TextBox();
-            this.txtNewCustConfirmPassword = new System.Windows.Forms.TextBox();
-            this.txtNewCustFirstName = new System.Windows.Forms.TextBox();
-            this.txtNewCustLastName = new System.Windows.Forms.TextBox();
-            this.txtNewCustCity = new System.Windows.Forms.TextBox();
-            this.txtNewCustCountry = new System.Windows.Forms.TextBox();
-            this.txtNewCustPhone = new System.Windows.Forms.TextBox();
+            this.txtNewPassword = new System.Windows.Forms.TextBox();
+            this.txtNewConfirmPassword = new System.Windows.Forms.TextBox();
+            this.txtNewFirstName = new System.Windows.Forms.TextBox();
+            this.txtNewtLastName = new System.Windows.Forms.TextBox();
+            this.txtNewCity = new System.Windows.Forms.TextBox();
+            this.txtNewCountry = new System.Windows.Forms.TextBox();
+            this.txtNewPhone = new System.Windows.Forms.TextBox();
             this.lblinvalidEmail = new System.Windows.Forms.Label();
             this.lblPassMisMatch = new System.Windows.Forms.Label();
             this.btnReturn = new System.Windows.Forms.Button();
@@ -68,14 +68,14 @@
             this.lblNewCustUserName.TabIndex = 0;
             this.lblNewCustUserName.Text = "Email:";
             // 
-            // txtNewCustUserName
+            // txtNewUserName
             // 
-            this.txtNewCustUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNewCustUserName.Location = new System.Drawing.Point(154, 22);
-            this.txtNewCustUserName.Margin = new System.Windows.Forms.Padding(2);
-            this.txtNewCustUserName.Name = "txtNewCustUserName";
-            this.txtNewCustUserName.Size = new System.Drawing.Size(283, 23);
-            this.txtNewCustUserName.TabIndex = 1;
+            this.txtNewUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNewUserName.Location = new System.Drawing.Point(154, 22);
+            this.txtNewUserName.Margin = new System.Windows.Forms.Padding(2);
+            this.txtNewUserName.Name = "txtNewUserName";
+            this.txtNewUserName.Size = new System.Drawing.Size(283, 23);
+            this.txtNewUserName.TabIndex = 1;
             // 
             // lblNewCustConfirmPassword
             // 
@@ -154,70 +154,70 @@
             this.lblNewCustPhone.TabIndex = 8;
             this.lblNewCustPhone.Text = "Phone:";
             // 
-            // txtNewCustPassword
+            // txtNewPassword
             // 
-            this.txtNewCustPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNewCustPassword.Location = new System.Drawing.Point(154, 55);
-            this.txtNewCustPassword.Margin = new System.Windows.Forms.Padding(2);
-            this.txtNewCustPassword.Name = "txtNewCustPassword";
-            this.txtNewCustPassword.PasswordChar = '*';
-            this.txtNewCustPassword.Size = new System.Drawing.Size(283, 23);
-            this.txtNewCustPassword.TabIndex = 9;
+            this.txtNewPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNewPassword.Location = new System.Drawing.Point(154, 55);
+            this.txtNewPassword.Margin = new System.Windows.Forms.Padding(2);
+            this.txtNewPassword.Name = "txtNewPassword";
+            this.txtNewPassword.PasswordChar = '*';
+            this.txtNewPassword.Size = new System.Drawing.Size(283, 23);
+            this.txtNewPassword.TabIndex = 9;
             // 
-            // txtNewCustConfirmPassword
+            // txtNewConfirmPassword
             // 
-            this.txtNewCustConfirmPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNewCustConfirmPassword.Location = new System.Drawing.Point(154, 89);
-            this.txtNewCustConfirmPassword.Margin = new System.Windows.Forms.Padding(2);
-            this.txtNewCustConfirmPassword.Name = "txtNewCustConfirmPassword";
-            this.txtNewCustConfirmPassword.PasswordChar = '*';
-            this.txtNewCustConfirmPassword.Size = new System.Drawing.Size(283, 23);
-            this.txtNewCustConfirmPassword.TabIndex = 10;
+            this.txtNewConfirmPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNewConfirmPassword.Location = new System.Drawing.Point(154, 89);
+            this.txtNewConfirmPassword.Margin = new System.Windows.Forms.Padding(2);
+            this.txtNewConfirmPassword.Name = "txtNewConfirmPassword";
+            this.txtNewConfirmPassword.PasswordChar = '*';
+            this.txtNewConfirmPassword.Size = new System.Drawing.Size(283, 23);
+            this.txtNewConfirmPassword.TabIndex = 10;
             // 
-            // txtNewCustFirstName
+            // txtNewFirstName
             // 
-            this.txtNewCustFirstName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNewCustFirstName.Location = new System.Drawing.Point(154, 157);
-            this.txtNewCustFirstName.Margin = new System.Windows.Forms.Padding(2);
-            this.txtNewCustFirstName.Name = "txtNewCustFirstName";
-            this.txtNewCustFirstName.Size = new System.Drawing.Size(283, 23);
-            this.txtNewCustFirstName.TabIndex = 11;
+            this.txtNewFirstName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNewFirstName.Location = new System.Drawing.Point(154, 157);
+            this.txtNewFirstName.Margin = new System.Windows.Forms.Padding(2);
+            this.txtNewFirstName.Name = "txtNewFirstName";
+            this.txtNewFirstName.Size = new System.Drawing.Size(283, 23);
+            this.txtNewFirstName.TabIndex = 11;
             // 
-            // txtNewCustLastName
+            // txtNewtLastName
             // 
-            this.txtNewCustLastName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNewCustLastName.Location = new System.Drawing.Point(154, 185);
-            this.txtNewCustLastName.Margin = new System.Windows.Forms.Padding(2);
-            this.txtNewCustLastName.Name = "txtNewCustLastName";
-            this.txtNewCustLastName.Size = new System.Drawing.Size(283, 23);
-            this.txtNewCustLastName.TabIndex = 12;
+            this.txtNewtLastName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNewtLastName.Location = new System.Drawing.Point(154, 185);
+            this.txtNewtLastName.Margin = new System.Windows.Forms.Padding(2);
+            this.txtNewtLastName.Name = "txtNewtLastName";
+            this.txtNewtLastName.Size = new System.Drawing.Size(283, 23);
+            this.txtNewtLastName.TabIndex = 12;
             // 
-            // txtNewCustCity
+            // txtNewCity
             // 
-            this.txtNewCustCity.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNewCustCity.Location = new System.Drawing.Point(154, 214);
-            this.txtNewCustCity.Margin = new System.Windows.Forms.Padding(2);
-            this.txtNewCustCity.Name = "txtNewCustCity";
-            this.txtNewCustCity.Size = new System.Drawing.Size(283, 23);
-            this.txtNewCustCity.TabIndex = 13;
+            this.txtNewCity.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNewCity.Location = new System.Drawing.Point(154, 214);
+            this.txtNewCity.Margin = new System.Windows.Forms.Padding(2);
+            this.txtNewCity.Name = "txtNewCity";
+            this.txtNewCity.Size = new System.Drawing.Size(283, 23);
+            this.txtNewCity.TabIndex = 13;
             // 
-            // txtNewCustCountry
+            // txtNewCountry
             // 
-            this.txtNewCustCountry.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNewCustCountry.Location = new System.Drawing.Point(154, 242);
-            this.txtNewCustCountry.Margin = new System.Windows.Forms.Padding(2);
-            this.txtNewCustCountry.Name = "txtNewCustCountry";
-            this.txtNewCustCountry.Size = new System.Drawing.Size(283, 23);
-            this.txtNewCustCountry.TabIndex = 14;
+            this.txtNewCountry.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNewCountry.Location = new System.Drawing.Point(154, 242);
+            this.txtNewCountry.Margin = new System.Windows.Forms.Padding(2);
+            this.txtNewCountry.Name = "txtNewCountry";
+            this.txtNewCountry.Size = new System.Drawing.Size(283, 23);
+            this.txtNewCountry.TabIndex = 14;
             // 
-            // txtNewCustPhone
+            // txtNewPhone
             // 
-            this.txtNewCustPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNewCustPhone.Location = new System.Drawing.Point(154, 271);
-            this.txtNewCustPhone.Margin = new System.Windows.Forms.Padding(2);
-            this.txtNewCustPhone.Name = "txtNewCustPhone";
-            this.txtNewCustPhone.Size = new System.Drawing.Size(283, 23);
-            this.txtNewCustPhone.TabIndex = 15;
+            this.txtNewPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNewPhone.Location = new System.Drawing.Point(154, 271);
+            this.txtNewPhone.Margin = new System.Windows.Forms.Padding(2);
+            this.txtNewPhone.Name = "txtNewPhone";
+            this.txtNewPhone.Size = new System.Drawing.Size(283, 23);
+            this.txtNewPhone.TabIndex = 15;
             // 
             // lblinvalidEmail
             // 
@@ -334,13 +334,13 @@
             this.Controls.Add(this.lblinvalidEmail);
             this.Controls.Add(this.picNewCustConfirmPassword);
             this.Controls.Add(this.picNewCustPassword);
-            this.Controls.Add(this.txtNewCustPhone);
-            this.Controls.Add(this.txtNewCustCountry);
-            this.Controls.Add(this.txtNewCustCity);
-            this.Controls.Add(this.txtNewCustLastName);
-            this.Controls.Add(this.txtNewCustFirstName);
-            this.Controls.Add(this.txtNewCustConfirmPassword);
-            this.Controls.Add(this.txtNewCustPassword);
+            this.Controls.Add(this.txtNewPhone);
+            this.Controls.Add(this.txtNewCountry);
+            this.Controls.Add(this.txtNewCity);
+            this.Controls.Add(this.txtNewtLastName);
+            this.Controls.Add(this.txtNewFirstName);
+            this.Controls.Add(this.txtNewConfirmPassword);
+            this.Controls.Add(this.txtNewPassword);
             this.Controls.Add(this.lblNewCustPhone);
             this.Controls.Add(this.lblNewCustCountry);
             this.Controls.Add(this.lblNewCustCity);
@@ -348,7 +348,7 @@
             this.Controls.Add(this.lblNewCustFirstName);
             this.Controls.Add(this.lblNewCustPassword);
             this.Controls.Add(this.lblNewCustConfirmPassword);
-            this.Controls.Add(this.txtNewCustUserName);
+            this.Controls.Add(this.txtNewUserName);
             this.Controls.Add(this.lblNewCustUserName);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmNewUser";
@@ -364,7 +364,7 @@
         #endregion
 
         private System.Windows.Forms.Label lblNewCustUserName;
-        private System.Windows.Forms.TextBox txtNewCustUserName;
+        private System.Windows.Forms.TextBox txtNewUserName;
         private System.Windows.Forms.Label lblNewCustConfirmPassword;
         private System.Windows.Forms.Label lblNewCustPassword;
         private System.Windows.Forms.Label lblNewCustFirstName;
@@ -372,13 +372,13 @@
         private System.Windows.Forms.Label lblNewCustCity;
         private System.Windows.Forms.Label lblNewCustCountry;
         private System.Windows.Forms.Label lblNewCustPhone;
-        private System.Windows.Forms.TextBox txtNewCustPassword;
-        private System.Windows.Forms.TextBox txtNewCustConfirmPassword;
-        private System.Windows.Forms.TextBox txtNewCustFirstName;
-        private System.Windows.Forms.TextBox txtNewCustLastName;
-        private System.Windows.Forms.TextBox txtNewCustCity;
-        private System.Windows.Forms.TextBox txtNewCustCountry;
-        private System.Windows.Forms.TextBox txtNewCustPhone;
+        private System.Windows.Forms.TextBox txtNewPassword;
+        private System.Windows.Forms.TextBox txtNewConfirmPassword;
+        private System.Windows.Forms.TextBox txtNewFirstName;
+        private System.Windows.Forms.TextBox txtNewtLastName;
+        private System.Windows.Forms.TextBox txtNewCity;
+        private System.Windows.Forms.TextBox txtNewCountry;
+        private System.Windows.Forms.TextBox txtNewPhone;
         private System.Windows.Forms.PictureBox picNewCustPassword;
         private System.Windows.Forms.PictureBox picNewCustConfirmPassword;
         private System.Windows.Forms.Label lblinvalidEmail;
