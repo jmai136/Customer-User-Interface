@@ -30,14 +30,14 @@
         {
             this.lblCustUserName = new System.Windows.Forms.Label();
             this.lblCustPassword = new System.Windows.Forms.Label();
-            this.txtCustUserName = new System.Windows.Forms.TextBox();
-            this.txtCustPassword = new System.Windows.Forms.TextBox();
+            this.txtUserName = new System.Windows.Forms.TextBox();
+            this.txtPassword = new System.Windows.Forms.TextBox();
             this.lblReturningCustomers = new System.Windows.Forms.Label();
             this.lblNewCustomer = new System.Windows.Forms.Label();
-            this.btnNewCustomer = new System.Windows.Forms.Button();
-            this.picCustPassword = new System.Windows.Forms.PictureBox();
+            this.btnNewUser = new System.Windows.Forms.Button();
+            this.picPassword = new System.Windows.Forms.PictureBox();
             this.btnLogin = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.picCustPassword)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picPassword)).BeginInit();
             this.SuspendLayout();
             // 
             // lblCustUserName
@@ -62,24 +62,24 @@
             this.lblCustPassword.TabIndex = 1;
             this.lblCustPassword.Text = "Password:";
             // 
-            // txtCustUserName
+            // txtUserName
             // 
-            this.txtCustUserName.Location = new System.Drawing.Point(209, 53);
-            this.txtCustUserName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.txtCustUserName.Name = "txtCustUserName";
-            this.txtCustUserName.Size = new System.Drawing.Size(212, 20);
-            this.txtCustUserName.TabIndex = 2;
-            this.txtCustUserName.TextChanged += new System.EventHandler(this.txtCustUserName_TextChanged);
+            this.txtUserName.Location = new System.Drawing.Point(209, 53);
+            this.txtUserName.Margin = new System.Windows.Forms.Padding(2);
+            this.txtUserName.Name = "txtUserName";
+            this.txtUserName.Size = new System.Drawing.Size(212, 20);
+            this.txtUserName.TabIndex = 2;
+            this.txtUserName.TextChanged += new System.EventHandler(this.txtCustUserName_TextChanged);
             // 
-            // txtCustPassword
+            // txtPassword
             // 
-            this.txtCustPassword.Location = new System.Drawing.Point(209, 106);
-            this.txtCustPassword.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.txtCustPassword.Name = "txtCustPassword";
-            this.txtCustPassword.PasswordChar = '*';
-            this.txtCustPassword.Size = new System.Drawing.Size(212, 20);
-            this.txtCustPassword.TabIndex = 3;
-            this.txtCustPassword.TextChanged += new System.EventHandler(this.txtCustPassword_TextChanged);
+            this.txtPassword.Location = new System.Drawing.Point(209, 106);
+            this.txtPassword.Margin = new System.Windows.Forms.Padding(2);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
+            this.txtPassword.Size = new System.Drawing.Size(212, 20);
+            this.txtPassword.TabIndex = 3;
+            this.txtPassword.TextChanged += new System.EventHandler(this.txtCustPassword_TextChanged);
             // 
             // lblReturningCustomers
             // 
@@ -103,28 +103,28 @@
             this.lblNewCustomer.TabIndex = 6;
             this.lblNewCustomer.Text = "Need an account? Create one here:";
             // 
-            // btnNewCustomer
+            // btnNewUser
             // 
-            this.btnNewCustomer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNewCustomer.Location = new System.Drawing.Point(269, 207);
-            this.btnNewCustomer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.btnNewCustomer.Name = "btnNewCustomer";
-            this.btnNewCustomer.Size = new System.Drawing.Size(152, 30);
-            this.btnNewCustomer.TabIndex = 7;
-            this.btnNewCustomer.Text = "New User";
-            this.btnNewCustomer.UseVisualStyleBackColor = true;
-            this.btnNewCustomer.Click += new System.EventHandler(this.btnNewCustomer_Click);
+            this.btnNewUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNewUser.Location = new System.Drawing.Point(269, 207);
+            this.btnNewUser.Margin = new System.Windows.Forms.Padding(2);
+            this.btnNewUser.Name = "btnNewUser";
+            this.btnNewUser.Size = new System.Drawing.Size(152, 30);
+            this.btnNewUser.TabIndex = 7;
+            this.btnNewUser.Text = "New User";
+            this.btnNewUser.UseVisualStyleBackColor = true;
+            this.btnNewUser.Click += new System.EventHandler(this.btnNewUser_Click);
             // 
-            // picCustPassword
+            // picPassword
             // 
-            this.picCustPassword.Image = global::GourmetShop.LoginForm.Properties.Resources.eyeClosed;
-            this.picCustPassword.Location = new System.Drawing.Point(434, 106);
-            this.picCustPassword.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.picCustPassword.Name = "picCustPassword";
-            this.picCustPassword.Size = new System.Drawing.Size(25, 24);
-            this.picCustPassword.TabIndex = 14;
-            this.picCustPassword.TabStop = false;
-            this.picCustPassword.Click += new System.EventHandler(this.picCustPassword_Click);
+            this.picPassword.Image = global::GourmetShop.LoginForm.Properties.Resources.eyeClosed;
+            this.picPassword.Location = new System.Drawing.Point(434, 106);
+            this.picPassword.Margin = new System.Windows.Forms.Padding(2);
+            this.picPassword.Name = "picPassword";
+            this.picPassword.Size = new System.Drawing.Size(25, 24);
+            this.picPassword.TabIndex = 14;
+            this.picPassword.TabStop = false;
+            this.picPassword.Click += new System.EventHandler(this.picPassword_Click);
             // 
             // btnLogin
             // 
@@ -142,19 +142,19 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(561, 263);
             this.Controls.Add(this.btnLogin);
-            this.Controls.Add(this.picCustPassword);
-            this.Controls.Add(this.btnNewCustomer);
+            this.Controls.Add(this.picPassword);
+            this.Controls.Add(this.btnNewUser);
             this.Controls.Add(this.lblNewCustomer);
             this.Controls.Add(this.lblReturningCustomers);
-            this.Controls.Add(this.txtCustPassword);
-            this.Controls.Add(this.txtCustUserName);
+            this.Controls.Add(this.txtPassword);
+            this.Controls.Add(this.txtUserName);
             this.Controls.Add(this.lblCustPassword);
             this.Controls.Add(this.lblCustUserName);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmLogin";
             this.Text = "Login";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmLogin_FormClosing);
-            ((System.ComponentModel.ISupportInitialize)(this.picCustPassword)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picPassword)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -164,12 +164,12 @@
 
         private System.Windows.Forms.Label lblCustUserName;
         private System.Windows.Forms.Label lblCustPassword;
-        private System.Windows.Forms.TextBox txtCustUserName;
-        private System.Windows.Forms.TextBox txtCustPassword;
+        private System.Windows.Forms.TextBox txtUserName;
+        private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Label lblReturningCustomers;
         private System.Windows.Forms.Label lblNewCustomer;
-        private System.Windows.Forms.Button btnNewCustomer;
-        private System.Windows.Forms.PictureBox picCustPassword;
+        private System.Windows.Forms.Button btnNewUser;
+        private System.Windows.Forms.PictureBox picPassword;
         private System.Windows.Forms.Button btnLogin;
     }
 }

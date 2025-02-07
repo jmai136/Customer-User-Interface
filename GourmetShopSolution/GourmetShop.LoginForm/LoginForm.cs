@@ -30,23 +30,23 @@ namespace GourmetShop.LoginForm
         public frmLogin()
         {
             InitializeComponent();
-            picCustPassword.Image = Properties.Resources.eyeClosed;//images from creative commons on google
+            picPassword.Image = Properties.Resources.eyeClosed;//images from creative commons on google
 
         }
         
         private void txtCustUserName_TextChanged(object sender, EventArgs e)
         {
-            btnLogin.Enabled = !string.IsNullOrWhiteSpace(txtCustUserName.Text) &&
-                                   !string.IsNullOrWhiteSpace(txtCustPassword.Text);
+            btnLogin.Enabled = !string.IsNullOrWhiteSpace(txtUserName.Text) &&
+                                   !string.IsNullOrWhiteSpace(txtPassword.Text);
         }
         
         private void txtCustPassword_TextChanged(object sender, EventArgs e)
         {
-            btnLogin.Enabled = !string.IsNullOrWhiteSpace(txtCustUserName.Text) &&
-                                    !string.IsNullOrWhiteSpace(txtCustPassword.Text);
+            btnLogin.Enabled = !string.IsNullOrWhiteSpace(txtUserName.Text) &&
+                                    !string.IsNullOrWhiteSpace(txtPassword.Text);
         }
 
-        private void btnNewCustomer_Click(object sender, EventArgs e)
+        private void btnNewUser_Click(object sender, EventArgs e)
         {
             this.Hide();
 
@@ -55,17 +55,17 @@ namespace GourmetShop.LoginForm
             newCustomer.Show();
         }
 
-       private void picCustPassword_Click(object sender, EventArgs e)
+       private void picPassword_Click(object sender, EventArgs e)
         {
-            if (txtCustPassword.PasswordChar == '*')
+            if (txtPassword.PasswordChar == '*')
             {
-                txtCustPassword.PasswordChar = '\0';
-                picCustPassword.Image = Properties.Resources.eyeOpen;
+                txtPassword.PasswordChar = '\0';
+                picPassword.Image = Properties.Resources.eyeOpen;
             }
             else
             {
-                txtCustPassword.PasswordChar = '*';
-                picCustPassword.Image = Properties.Resources.eyeClosed;
+                txtPassword.PasswordChar = '*';
+                picPassword.Image = Properties.Resources.eyeClosed;
             }
         }
 
@@ -83,8 +83,8 @@ namespace GourmetShop.LoginForm
         {
             Authentication authentication = new Authentication()
             {
-                Username = txtCustUserName.Text,
-                Password = txtCustPassword.Text
+                Username = txtUserName.Text,
+                Password = txtPassword.Text
             };
 
             try
