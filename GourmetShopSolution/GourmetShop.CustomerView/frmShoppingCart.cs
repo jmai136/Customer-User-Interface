@@ -152,20 +152,19 @@ namespace GourmetShop.CustomerView
                 // FIXED: Open the Customer View form with the product list
                 this.Close();
             }
+            catch (SqlException ex)
+            {
+                MessageBox.Show($"Database error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
-                // If an error occurs, show the error message
-                MessageBox.Show($"There was an issue placing your order: {ex.Message}", "Order Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"An error occurred while placing the order: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-
         }
 
 
         private void ClearCart()
         {
-            
-          
             dgvShoppingCartView.DataSource = null; // Clear DataGridView
             lblTotalAmountDue.Text = "Total Amount Due: $0.00";
         }

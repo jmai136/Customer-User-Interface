@@ -379,5 +379,15 @@ namespace GourmetShop.DataAccessTests
                 shoppingcartRepository.AddToCart(9999, 1, 1);
             });
         }
+
+        [TestMethod]
+        public void Exception_PlaceOrder_NonexistentCustomer()
+        {
+            Assert.ThrowsException<SqlException>(() =>
+            {
+                ShoppingCartRepository shoppingcartRepository = new ShoppingCartRepository(connectionString);
+                shoppingcartRepository.PlaceOrder(9999);
+            });
+        }
     }
 }
