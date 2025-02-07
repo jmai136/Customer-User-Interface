@@ -56,28 +56,40 @@ namespace GourmetShop.CustomerView
 
             if (cartId > 0)
             {
-             
-                DataTable cartData = shoppingCartRepository.ViewCart(cartId); // Fetch cart items
-
-
-               
-
-                dgvShoppingCartView.DataSource = cartData; // Bind to DataGridView
-
-                decimal totalAmount = 0;
-
-
-                foreach (DataRow row in cartData.Rows)
+                try
                 {
-                    decimal price = Convert.ToDecimal(row["Price"]);
-                    int quantity = Convert.ToInt32(row["Quantity"]);
+                    DataTable cartData = shoppingCartRepository.ViewCart(cartId); // Fetch cart items
+                    dgvShoppingCartView.DataSource = cartData; // Bind to DataGridView
 
-                    // Add price * quantity to the total amount
-                    totalAmount += price * quantity;
+                    decimal totalAmount = 0;
+
+
+                    foreach (DataRow row in cartData.Rows)
+                    {
+                        decimal price = Convert.ToDecimal(row["Price"]);
+                        int quantity = Convert.ToInt32(row["Quantity"]);
+
+                        // Add price * quantity to the total amount
+                        totalAmount += price * quantity;
+                    }
+
+                    // Update the label **after** calculating total
+                    lblTotalAmountDue.Text = $"Total Amount Due: ${totalAmount:F2}";
                 }
-
-                // Update the label **after** calculating total
-                lblTotalAmountDue.Text = $"Total Amount Due: ${totalAmount:F2}";
+                catch (SqlException ex)
+                {
+                    // Handle SQL-related errors
+                    MessageBox.Show($"Database error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    // Ignore the reentrant call exception
+                }
+                catch (Exception ex)
+                {
+                    // Handle general errors
+                    MessageBox.Show($"An error occurred while loading the cart: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
