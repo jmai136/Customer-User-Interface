@@ -130,13 +130,11 @@ namespace GourmetShop.DataAccess.Repositories
             }
             catch (SqlException ex)
             {
-                // Handle SQL-related errors
-                MessageBox.Show($"Database error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
             catch (Exception ex)
             {
-                // Handle general errors
-                MessageBox.Show($"An error occurred while loading the cart: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
 
             // Return to prevent null reference exceptions
