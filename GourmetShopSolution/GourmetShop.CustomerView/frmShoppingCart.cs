@@ -23,6 +23,18 @@ namespace GourmetShop.CustomerView
         public frmShoppingCart()
         {
             InitializeComponent();
+
+            
+            int cartId = shoppingCartRepository.GetCartIdForCustomer(SessionData.CurrentCustomerId);
+            if (cartId > 0)
+            {
+                SessionData.CurrentCartId = cartId;
+            }
+            else
+            {
+                MessageBox.Show("Your cart is empty. Please add products first.", "Cart Empty", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
             LoadShoppingCart();
 
             // Set all columns as read-only first
@@ -180,6 +192,7 @@ namespace GourmetShop.CustomerView
             dgvShoppingCartView.DataSource = null; // Clear DataGridView
             lblTotalAmountDue.Text = "Total Amount Due: $0.00";
         }
+
         private void frmShoppingCart_Load(object sender, EventArgs e)
         {
             
