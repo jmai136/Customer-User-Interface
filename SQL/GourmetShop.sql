@@ -806,9 +806,28 @@ BEGIN
     DECLARE @TotalAmount DECIMAL(12, 2) = 0;
 
     BEGIN TRY
+		IF NOT EXISTS(
+			SELECT * FROM Customer WHERE Id = @CustomerId
+		)
+		BEGIN
+			RAISERROR('Customer does not exist', 16, 1);
+			RETURN;
+		END
+
         -- Step 1: Get the last order number from the entire Order table
+
         DECLARE @LastOrderNumber INT;
-        SELECT @LastOrderNumber = MAX(CAST(OrderNumber AS INT))
+        
+		IF NOT EXISTS(
+			SELECT 1
+			FROM "Order"
+		)
+		BEGIN
+			RAISERROR('No orders exist', 16, 1)
+			RETURN;
+		END;
+		
+		SELECT @LastOrderNumber = MAX(CAST(OrderNumber AS INT))
         FROM "Order";
 
         -- Step 2: Increment the last order number by 1 for the new order
