@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -185,10 +186,15 @@ namespace GourmetShop.CustomerView
                 // Optionally, display a confirmation message
                 MessageBox.Show("Product removed from the cart.");
             }
+            catch (SqlException ex)
+            {
+                // Handle SQL-related errors (e.g., connection failure, constraint violations)
+                MessageBox.Show($"Database error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             catch (Exception ex)
             {
-                // Handle any exceptions that might occur
-                MessageBox.Show("Error: " + ex.Message);
+                // Handle any unexpected exceptions
+                MessageBox.Show($"An error occurred while removing the product from the cart: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -213,14 +219,28 @@ namespace GourmetShop.CustomerView
 
                     if (result == DialogResult.Yes)
                     {
-                        // Call repository method to remove the item from the database
-                        shoppingCartRepository.RemoveFromCart(cartId, productId);
+                        try
+                        {
+                            // Call the RemoveFromCart stored procedure using the ShoppingCartRepository
+                            // Call repository method to remove the item from the database
+                            shoppingCartRepository.RemoveFromCart(cartId, productId);
 
-                        // Remove the row from the DataGridView
-                        dgvShoppingCartView.Rows.RemoveAt(e.RowIndex);
+                            // Remove the row from the DataGridView
+                            dgvShoppingCartView.Rows.RemoveAt(e.RowIndex);
 
-                        // Refresh total amount
-                        LoadShoppingCart();
+                            // Refresh total amount
+                            LoadShoppingCart();
+                        }
+                        catch (SqlException ex)
+                        {
+                            // Handle SQL-related errors (e.g., connection failure, constraint violations)
+                            MessageBox.Show($"Database error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Handle any unexpected exceptions
+                            MessageBox.Show($"An error occurred while removing the product from the cart: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     else
                     {

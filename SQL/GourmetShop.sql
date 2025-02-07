@@ -1,5 +1,5 @@
-﻿--USE master
---DROP DATABASE GourmetShop;
+﻿USE master
+DROP DATABASE GourmetShop;
 
 CREATE DATABASE GourmetShop
 GO
@@ -20,6 +20,18 @@ CREATE TABLE [User] (
    CONSTRAINT PK_USER primary key (Id),
 )
 go
+
+CREATE PROCEDURE GetUser
+	@UserId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT*
+    FROM [User]
+    WHERE Id = @UserId;
+END;
+GO
 
 CREATE PROCEDURE CheckUserExists
     @FirstName NVARCHAR(100),
@@ -339,12 +351,24 @@ BEGIN
     DECLARE @Price DECIMAL(12, 2);
 
     BEGIN TRY
+		-- FIXED: Makes sure the customer actually exists
+		IF NOT EXISTS(SELECT * FROM Customer WHERE Id = @CustomerID)
+		BEGIN
+			RAISERROR('Customer does not exist', 16, 1);
+		END
+
+		-- FIXED: Added case to make sure that there's more than one product added
+		IF @Quantity <= 0
+		BEGIN
+			RAISERROR( 'Must have more than 1 product', 16, 1);
+		END
+
         -- Get the price of the product
         SELECT @Price = UnitPrice FROM Product WHERE Id = @ProductID;
 
         IF @Price IS NULL
         BEGIN
-            THROW 50001, 'Product not found.', 1;
+            RAISERROR('Product not found.', 16, 1);
         END
 
         -- Check if customer has an active shopping cart

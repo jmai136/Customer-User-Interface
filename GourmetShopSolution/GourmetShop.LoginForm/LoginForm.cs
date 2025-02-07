@@ -30,24 +30,23 @@ namespace GourmetShop.LoginForm
         public frmLogin()
         {
             InitializeComponent();
-            picCustPassword.Image = Properties.Resources.eyeClosed;//images from creative commons on google
+            picPassword.Image = Properties.Resources.eyeClosed;//images from creative commons on google
 
         }
-       
         
         private void txtCustUserName_TextChanged(object sender, EventArgs e)
         {
-            btnCustLogin.Enabled = !string.IsNullOrWhiteSpace(txtCustUserName.Text) &&
-                                   !string.IsNullOrWhiteSpace(txtCustPassword.Text);
+            btnLogin.Enabled = !string.IsNullOrWhiteSpace(txtUserName.Text) &&
+                                   !string.IsNullOrWhiteSpace(txtPassword.Text);
         }
         
         private void txtCustPassword_TextChanged(object sender, EventArgs e)
         {
-            btnCustLogin.Enabled = !string.IsNullOrWhiteSpace(txtCustUserName.Text) &&
-                                    !string.IsNullOrWhiteSpace(txtCustPassword.Text);
+            btnLogin.Enabled = !string.IsNullOrWhiteSpace(txtUserName.Text) &&
+                                    !string.IsNullOrWhiteSpace(txtPassword.Text);
         }
 
-        private void btnNewCustomer_Click(object sender, EventArgs e)
+        private void btnNewUser_Click(object sender, EventArgs e)
         {
             this.Hide();
 
@@ -56,82 +55,17 @@ namespace GourmetShop.LoginForm
             newCustomer.Show();
         }
 
-       
-
-       private void picCustPassword_Click(object sender, EventArgs e)
+       private void picPassword_Click(object sender, EventArgs e)
         {
-            if (txtCustPassword.PasswordChar == '*')
+            if (txtPassword.PasswordChar == '*')
             {
-                txtCustPassword.PasswordChar = '\0';
-                picCustPassword.Image = Properties.Resources.eyeOpen;
+                txtPassword.PasswordChar = '\0';
+                picPassword.Image = Properties.Resources.eyeOpen;
             }
             else
             {
-                txtCustPassword.PasswordChar = '*';
-                picCustPassword.Image = Properties.Resources.eyeClosed;
-            }
-        }
-
-        
-
-        private void btnCustLogin_Click(object sender, EventArgs e)
-        {
-            Authentication authentication = new Authentication()
-            {
-                Username = txtCustUserName.Text,
-                Password = txtCustPassword.Text
-            };
-
-
-            try
-            {
-                int userId = _authService.Login(authentication.Username, authentication.Password);
-
-                //retrievs customer id and sets it as current session data
-
-                Customer customer = customerRepository.GetByUserId(userId);
-                SessionData.CurrentCustomerId = customer.Id;
-
-                //checks if customer has an existing cart that has products in it.
-                int cartId = shoppingcartRepository.GetCartIdForCustomer(userId);
-                if (cartId > 0)
-                {
-                    SessionData.CurrentCartId = cartId; // Apply existing cart to session
-                }
-
-                this.Hide();
-                frmCustomerMain customerMain = new frmCustomerMain(userId);
-                customerMain.FormClosed += (s, args) => this.Close();
-                customerMain.Show();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Login Failed: {ex.Message}");
-            }
-        }
-
-       
-        private void btnAdminLogin_Click(object sender, EventArgs e)
-        {
-            Authentication authentication = new Authentication()
-            {
-                Username = txtAdminUsername.Text,
-                Password = txtAdminPassword.Text
-            };
-
-            try
-            {
-                int userId = _authService.Login(authentication.Username, authentication.Password);
-
-                frmAdminMain adminMain = new frmAdminMain(userId);
-
-                this.Hide();
-                adminMain.FormClosed += (s, args) => this.Close();
-                adminMain.Show();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Login Failed: {ex.Message}");
+                txtPassword.PasswordChar = '*';
+                picPassword.Image = Properties.Resources.eyeClosed;
             }
         }
 
@@ -145,29 +79,55 @@ namespace GourmetShop.LoginForm
             Application.Exit();
         }
 
-        private void txtAdminUsername_TextChanged(object sender, EventArgs e)
+        private void btnLogin_Click(object sender, EventArgs e)
         {
-            btnAdminLogin.Enabled = !string.IsNullOrWhiteSpace(txtAdminUsername.Text) &&
-                                   !string.IsNullOrWhiteSpace(txtAdminPassword.Text);
-        }
-
-        private void txtAdminPassword_TextChanged(object sender, EventArgs e)
-        {
-            btnAdminLogin.Enabled = !string.IsNullOrWhiteSpace(txtAdminUsername.Text) &&
-                                   !string.IsNullOrWhiteSpace(txtAdminPassword.Text);
-        }
-
-        private void picAdminPassword_Click(object sender, EventArgs e)
-        {
-            if(txtCustPassword.PasswordChar == '*')
+            Authentication authentication = new Authentication()
             {
-                txtAdminPassword.PasswordChar = '\0';
-                picAdminPassword.Image = Properties.Resources.eyeOpen;
+                Username = txtUserName.Text,
+                Password = txtPassword.Text
+            };
+
+            try
+            {
+                int userId = _authService.Login(authentication.Username, authentication.Password);
+
+
+                UserRepository userRepository = new UserRepository(connectionString);
+                User user = userRepository.GetByUserId(userId);
+
+                if (user.RoleId == 1)
+                {
+                    Customer customer = customerRepository.GetByUserId(userId);
+                    SessionData.CurrentCustomerId = customer.Id;
+
+                    //checks if customer has an existing cart that has products in it.
+                    int cartId = shoppingcartRepository.GetCartIdForCustomer(userId);
+                    if (cartId > 0)
+                    {
+                        SessionData.CurrentCartId = cartId; // Apply existing cart to session
+                    }
+
+                    frmCustomerMain customerMain = new frmCustomerMain(userId);
+                    this.Hide();
+                    customerMain.FormClosed += (s, args) => this.Close();
+                    customerMain.Show();
+                }
+                else if (user.RoleId == 2)
+                {
+                    frmAdminMain adminMain = new frmAdminMain(userId);
+
+                    this.Hide();
+                    adminMain.FormClosed += (s, args) => this.Close();
+                    adminMain.Show();
+                }
+                else
+                {
+                    throw new Exception("Invalid user type");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                txtAdminPassword.PasswordChar = '*';
-                picAdminPassword.Image = Properties.Resources.eyeClosed;
+                MessageBox.Show($"Login Failed: {ex.Message}");
             }
         }
     }

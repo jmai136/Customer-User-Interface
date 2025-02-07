@@ -41,16 +41,16 @@ namespace GourmetShop.DataAccessTests
                 Id = 1,
                 ProductName = "Chai",
                 SupplierId = 1,
-                UnitPrice= 18.00m,
-                Package="10 boxes x 20 bags",
-                IsDiscontinued=false
+                UnitPrice = 18.00m,
+                Package = "10 boxes x 20 bags",
+                IsDiscontinued = false
             };
 
             Product retrieved = pr.GetById(product.Id);
 
             Assert.AreEqual(product, retrieved);
         }
-        
+
         [TestMethod]
         public void GetSupplierById()
         {
@@ -83,9 +83,9 @@ namespace GourmetShop.DataAccessTests
             {
                 Id = -1,
                 CompanyName = "Lysette's Antique Shop",
-                ContactName= "Lysette Danielkovski",
-                City="5 Dogwood Drive",
-                Phone="351.456.7526"
+                ContactName = "Lysette Danielkovski",
+                City = "5 Dogwood Drive",
+                Phone = "351.456.7526"
             };
 
             // Assert whether both objects are equal
@@ -116,10 +116,10 @@ namespace GourmetShop.DataAccessTests
             {
                 Id = -1,
                 ProductName = "To Ashes and Blood",
-                UnitPrice= (decimal?)85.74,
-                Package="League of Legends: Arcane",
-                IsDiscontinued=false,
-                SupplierId=1
+                UnitPrice = (decimal?)85.74,
+                Package = "League of Legends: Arcane",
+                IsDiscontinued = false,
+                SupplierId = 1
             };
 
             // Assert whether both objects are equal
@@ -347,6 +347,36 @@ namespace GourmetShop.DataAccessTests
             {
                 AuthService authService = new AuthService(connectionString);
                 int userId = authService.Login(authentication.Username, authentication.Password);
+            });
+        }
+
+        [TestMethod]
+        public void Exception_AddToCart_ForNonexistentProduct()
+        {
+            Assert.ThrowsException<SqlException>(() =>
+            {
+                ShoppingCartRepository shoppingcartRepository = new ShoppingCartRepository(connectionString);
+                shoppingcartRepository.AddToCart(1, 100, 1);
+            });
+        }
+
+        [TestMethod]
+        public void Exception_AddToCart_InvalidQuantity()
+        {
+            Assert.ThrowsException<SqlException>(() =>
+            {
+                ShoppingCartRepository shoppingcartRepository = new ShoppingCartRepository(connectionString);
+                shoppingcartRepository.AddToCart(1, 1, 0);
+            });
+        }
+
+        [TestMethod]
+        public void Exception_AddToCart_NonexistentCustomer()
+        {
+            Assert.ThrowsException<SqlException>(() =>
+            {
+                ShoppingCartRepository shoppingcartRepository = new ShoppingCartRepository(connectionString);
+                shoppingcartRepository.AddToCart(9999, 1, 1);
             });
         }
     }

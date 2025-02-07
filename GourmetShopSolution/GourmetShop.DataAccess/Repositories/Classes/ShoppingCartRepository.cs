@@ -40,13 +40,11 @@ namespace GourmetShop.DataAccess.Repositories
             }
             catch (SqlException ex)
             {
-                // Handle SQL exceptions (e.g., connection issues, constraint violations)
-                MessageBox.Show($"Database error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
             catch (Exception ex)
             {
-                // Handle general exceptions
-                MessageBox.Show($"An error occurred while adding the product to the cart: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
         }
 
@@ -90,13 +88,11 @@ namespace GourmetShop.DataAccess.Repositories
             }
             catch (SqlException ex)
             {
-                // Handle SQL-related errors (e.g., connection failure, constraint violations)
-                MessageBox.Show($"Database error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
             catch (Exception ex)
             {
-                // Handle any unexpected exceptions
-                MessageBox.Show($"An error occurred while removing the product from the cart: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
         }
 
