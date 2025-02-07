@@ -47,9 +47,9 @@
             this.lblCustUserName.Location = new System.Drawing.Point(105, 50);
             this.lblCustUserName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCustUserName.Name = "lblCustUserName";
-            this.lblCustUserName.Size = new System.Drawing.Size(87, 20);
+            this.lblCustUserName.Size = new System.Drawing.Size(52, 20);
             this.lblCustUserName.TabIndex = 0;
-            this.lblCustUserName.Text = "Username:";
+            this.lblCustUserName.Text = "Email:";
             // 
             // lblCustPassword
             // 

@@ -64,15 +64,15 @@
             this.lblNewCustUserName.Location = new System.Drawing.Point(9, 21);
             this.lblNewCustUserName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblNewCustUserName.Name = "lblNewCustUserName";
-            this.lblNewCustUserName.Size = new System.Drawing.Size(130, 20);
+            this.lblNewCustUserName.Size = new System.Drawing.Size(52, 20);
             this.lblNewCustUserName.TabIndex = 0;
-            this.lblNewCustUserName.Text = "Username/Email:";
+            this.lblNewCustUserName.Text = "Email:";
             // 
             // txtNewCustUserName
             // 
             this.txtNewCustUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNewCustUserName.Location = new System.Drawing.Point(154, 22);
-            this.txtNewCustUserName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtNewCustUserName.Margin = new System.Windows.Forms.Padding(2);
             this.txtNewCustUserName.Name = "txtNewCustUserName";
             this.txtNewCustUserName.Size = new System.Drawing.Size(283, 23);
             this.txtNewCustUserName.TabIndex = 1;
@@ -158,7 +158,7 @@
             // 
             this.txtNewCustPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNewCustPassword.Location = new System.Drawing.Point(154, 55);
-            this.txtNewCustPassword.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtNewCustPassword.Margin = new System.Windows.Forms.Padding(2);
             this.txtNewCustPassword.Name = "txtNewCustPassword";
             this.txtNewCustPassword.PasswordChar = '*';
             this.txtNewCustPassword.Size = new System.Drawing.Size(283, 23);
@@ -168,7 +168,7 @@
             // 
             this.txtNewCustConfirmPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNewCustConfirmPassword.Location = new System.Drawing.Point(154, 89);
-            this.txtNewCustConfirmPassword.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtNewCustConfirmPassword.Margin = new System.Windows.Forms.Padding(2);
             this.txtNewCustConfirmPassword.Name = "txtNewCustConfirmPassword";
             this.txtNewCustConfirmPassword.PasswordChar = '*';
             this.txtNewCustConfirmPassword.Size = new System.Drawing.Size(283, 23);
@@ -178,7 +178,7 @@
             // 
             this.txtNewCustFirstName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNewCustFirstName.Location = new System.Drawing.Point(154, 157);
-            this.txtNewCustFirstName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtNewCustFirstName.Margin = new System.Windows.Forms.Padding(2);
             this.txtNewCustFirstName.Name = "txtNewCustFirstName";
             this.txtNewCustFirstName.Size = new System.Drawing.Size(283, 23);
             this.txtNewCustFirstName.TabIndex = 11;
@@ -187,7 +187,7 @@
             // 
             this.txtNewCustLastName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNewCustLastName.Location = new System.Drawing.Point(154, 185);
-            this.txtNewCustLastName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtNewCustLastName.Margin = new System.Windows.Forms.Padding(2);
             this.txtNewCustLastName.Name = "txtNewCustLastName";
             this.txtNewCustLastName.Size = new System.Drawing.Size(283, 23);
             this.txtNewCustLastName.TabIndex = 12;
@@ -196,7 +196,7 @@
             // 
             this.txtNewCustCity.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNewCustCity.Location = new System.Drawing.Point(154, 214);
-            this.txtNewCustCity.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtNewCustCity.Margin = new System.Windows.Forms.Padding(2);
             this.txtNewCustCity.Name = "txtNewCustCity";
             this.txtNewCustCity.Size = new System.Drawing.Size(283, 23);
             this.txtNewCustCity.TabIndex = 13;
@@ -205,7 +205,7 @@
             // 
             this.txtNewCustCountry.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNewCustCountry.Location = new System.Drawing.Point(154, 242);
-            this.txtNewCustCountry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtNewCustCountry.Margin = new System.Windows.Forms.Padding(2);
             this.txtNewCustCountry.Name = "txtNewCustCountry";
             this.txtNewCustCountry.Size = new System.Drawing.Size(283, 23);
             this.txtNewCustCountry.TabIndex = 14;
@@ -214,7 +214,7 @@
             // 
             this.txtNewCustPhone.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNewCustPhone.Location = new System.Drawing.Point(154, 271);
-            this.txtNewCustPhone.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtNewCustPhone.Margin = new System.Windows.Forms.Padding(2);
             this.txtNewCustPhone.Name = "txtNewCustPhone";
             this.txtNewCustPhone.Size = new System.Drawing.Size(283, 23);
             this.txtNewCustPhone.TabIndex = 15;
@@ -245,7 +245,7 @@
             // 
             this.btnReturn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnReturn.Location = new System.Drawing.Point(443, 313);
-            this.btnReturn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnReturn.Margin = new System.Windows.Forms.Padding(2);
             this.btnReturn.Name = "btnReturn";
             this.btnReturn.Size = new System.Drawing.Size(135, 25);
             this.btnReturn.TabIndex = 21;
@@ -257,7 +257,7 @@
             // 
             this.picNewCustConfirmPassword.Image = global::GourmetShop.LoginForm.Properties.Resources.eyeClosed;
             this.picNewCustConfirmPassword.Location = new System.Drawing.Point(443, 89);
-            this.picNewCustConfirmPassword.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.picNewCustConfirmPassword.Margin = new System.Windows.Forms.Padding(2);
             this.picNewCustConfirmPassword.Name = "picNewCustConfirmPassword";
             this.picNewCustConfirmPassword.Size = new System.Drawing.Size(25, 24);
             this.picNewCustConfirmPassword.TabIndex = 18;
@@ -268,7 +268,7 @@
             // 
             this.picNewCustPassword.Image = global::GourmetShop.LoginForm.Properties.Resources.eyeClosed;
             this.picNewCustPassword.Location = new System.Drawing.Point(443, 58);
-            this.picNewCustPassword.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.picNewCustPassword.Margin = new System.Windows.Forms.Padding(2);
             this.picNewCustPassword.Name = "picNewCustPassword";
             this.picNewCustPassword.Size = new System.Drawing.Size(25, 24);
             this.picNewCustPassword.TabIndex = 17;
@@ -291,7 +291,7 @@
             // 
             this.cboAdmin.AutoSize = true;
             this.cboAdmin.Location = new System.Drawing.Point(81, 322);
-            this.cboAdmin.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cboAdmin.Margin = new System.Windows.Forms.Padding(2);
             this.cboAdmin.Name = "cboAdmin";
             this.cboAdmin.Size = new System.Drawing.Size(93, 17);
             this.cboAdmin.TabIndex = 23;
@@ -350,7 +350,7 @@
             this.Controls.Add(this.lblNewCustConfirmPassword);
             this.Controls.Add(this.txtNewCustUserName);
             this.Controls.Add(this.lblNewCustUserName);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmNewUser";
             this.Text = "New User Registration";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmNewUser_FormClosing);
